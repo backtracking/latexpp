@@ -48,10 +48,10 @@ all: $(OCAMLBEST)
 # bytecode and native-code compilation
 ######################################
 
-CMO = options.cmo pp.cmo main.cmo
+CMO = options.cmo pp.cmo ocaml.cmo main.cmo
 CMX = $(CMO:.cmo=.cmx)
 
-GENERATED = version.ml pp.ml
+GENERATED = version.ml pp.ml ocaml.ml
 
 byte: $(NAME).byte
 opt: $(NAME).opt

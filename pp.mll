@@ -5,7 +5,13 @@
   open Lexing 
   open Format
 
+  let newline lexbuf =
+    let pos = lexbuf.lex_curr_p in
+    lexbuf.lex_curr_p <- 
+      { pos with pos_lnum = pos.pos_lnum + 1; pos_bol = pos.pos_cnum }
+
   let out = ref std_formatter
+  let set_out_formatter = (:=) out
   let print_string s = pp_print_string !out s
   let print_char c = pp_print_char !out c
 
@@ -15,16 +21,19 @@
   let add_pp_environment = Hashtbl.add ppenvs
 }
 
-let space = [' ' '\t']
+let space = [' ' '\t' '\r']
+let newline = '\n'
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* 
 
 rule pp = parse
-  | "\\begin{" (ident as e) "}"
+  | "\\begin{" (ident as id) "}" space* (newline? as nl)
       { 
-	if Hashtbl.mem ppenvs e then begin
+	if nl <> "" then newline lexbuf;
+	if Hashtbl.mem ppenvs id then begin
 	  Buffer.reset buffer;
-	  cut_env ((=) e) lexbuf;
-  	  let ppf = Hashtbl.find ppenvs e in
+	  let e = id, lexeme_start_p lexbuf in
+	  environment e true lexbuf;
+  	  let ppf = Hashtbl.find ppenvs id in
 	  ppf !out (Buffer.contents buffer)
 	end else 
 	  print_string (lexeme lexbuf);
@@ -33,24 +42,43 @@ rule pp = parse
   | eof 
       { () }
   | _ as c
-      { print_char c; pp lexbuf }
-
-and cut_env p = parse
-  | "\\end{" (ident as e') "}"
       { 
-	if not (p e') then begin 
-	  print_string (lexeme lexbuf); cut_env p lexbuf 
-        end 
+	if c = '\n' then newline lexbuf;
+	print_char c; pp lexbuf 
       }
-  | "\\begin{" ident "}"
+
+and environment e stop = parse
+  | "\\end{" (ident as id) "}" space* (newline? as nl)
       { 
-	cut_env (fun _ -> true) lexbuf;
-	cut_env p lexbuf 
+	if id = fst e then begin 
+	  if not stop then Buffer.add_string buffer (lexeme lexbuf)
+	end else begin
+	  let l = lexeme_start_p lexbuf in
+	  eprintf "%s:%d: should close environment %s, not %s@." 
+	    l.pos_fname l.pos_lnum (fst e) id;
+	  exit 1
+	end;
+	if nl <> "" then newline lexbuf
+      }
+  | "\\begin{" (ident as id) "}"
+      { 
+	Buffer.add_string buffer (lexeme lexbuf);
+	let e' = id, lexeme_start_p lexbuf in
+	environment e' false lexbuf;
+	environment e stop lexbuf 
       }
   | _ as c
-      { Buffer.add_char buffer c; cut_env p lexbuf }
+      { 
+	if c = '\n' then newline lexbuf;
+	Buffer.add_char buffer c; environment e stop lexbuf 
+      }
   | eof
-      { eprintf "unterminated environment %s@." e; exit 1 }
+      { 
+	let id, l = e in
+	eprintf 
+	  "%s:%d: unterminated environment %s@." l.pos_fname l.pos_lnum id; 
+	exit 1 
+      }
 
 {
 }

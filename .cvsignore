@@ -1,3 +1,5 @@
 pp.ml version.ml Makefile configure autom4te.cache config.status latexpp.opt
 .depend
 test.tex
+ocaml.ml test.aux test.dvi test.log test.ml test.tex test.tex~ test.waux test.wdvi _whizzy_test.aux _whizzy_test_d _whizzy_test.dif _whizzy_test.fmt _whizzy_test.last _whizzy_test.log _whizzy_test.new _whizzy_test_nil.aux _whizzy_test_nil.log _whizzy_test_nil.tex _whizzy_test_nil.waux _whizzy_test.raux _whizzy_test.tex _whizzy_test.wdvi
+._whizzy_test.tex
