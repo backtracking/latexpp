@@ -1,2 +1,3 @@
 pp.ml version.ml Makefile configure autom4te.cache config.status latexpp.opt
 .depend
+test.tex

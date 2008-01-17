@@ -48,7 +48,7 @@ all: $(OCAMLBEST)
 # bytecode and native-code compilation
 ######################################
 
-CMO = pp.cmo main.cmo
+CMO = options.cmo pp.cmo main.cmo
 CMX = $(CMO:.cmo=.cmx)
 
 GENERATED = version.ml pp.ml
