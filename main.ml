@@ -1,0 +1,5 @@
+
+let main () =
+  ()
+
+let () = main ()
