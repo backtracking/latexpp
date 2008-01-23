@@ -2,6 +2,9 @@
 open Format
 open Options
 
+let () = List.iter Pp.map_environment env_mappings
+let () = List.iter Pp.map_macro macro_mappings
+
 let main () =
   begin match output_file with
     | None -> 

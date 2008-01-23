@@ -4,6 +4,7 @@
 {
   open Lexing 
   open Format
+  open Options
 
   let newline lexbuf =
     let pos = lexbuf.lex_curr_p in
@@ -19,6 +20,23 @@
 
   let ppenvs = Hashtbl.create 17
   let add_pp_environment = Hashtbl.add ppenvs
+
+  let map_environment (e,pp) = 
+    try
+      Hashtbl.add ppenvs e (Hashtbl.find ppenvs pp)
+    with Not_found ->
+      eprintf "latexpp: unknown preprocesseur `%s'@." pp; 
+      exit 1
+
+  let ppmacros = Hashtbl.create 17
+  let add_pp_macro = Hashtbl.add ppmacros
+
+  let map_macro (m,pp) = 
+    try
+      Hashtbl.add ppmacros m (Hashtbl.find ppmacros pp)
+    with Not_found ->
+      eprintf "latexpp: unknown preprocesseur `%s'@." pp; 
+      exit 1
 }
 
 let space = [' ' '\t' '\r']
