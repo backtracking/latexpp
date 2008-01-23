@@ -23,6 +23,20 @@
 
   let is_keyword = Hashtbl.mem ocaml_keywords  
 
+  let tab_size = 8
+
+  let count_spaces s =
+    let c = ref 0 in
+    for i = 0 to String.length s - 1 do
+      c := !c + (
+        if s.[i] = '\t' then
+	  tab_size - (!c mod tab_size)
+	else
+	  1
+      )
+    done;
+    !c
+
 }
 
 let space = [' ' '\t']
@@ -39,16 +53,20 @@ rule pp fmt = parse
   | '\n' { fprintf fmt "\n"; pp fmt lexbuf }
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
   | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
-  | "=>" { fprintf fmt "\\ensuremath{\\Rightarrow}"; pp fmt lexbuf }
-  | "<->" { fprintf fmt "\\ensuremath{\\leftrightarrow}"; pp fmt lexbuf }
-  | "\\emph{" [^'}']* '}' 
-      { pp_print_string fmt (lexeme lexbuf); pp fmt lexbuf }
+  | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
+  | "<=" { fprintf fmt "\\ensuremath{\\le}"; pp fmt lexbuf }
+  | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
+  | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
+  | "==" { fprintf fmt "\\ensuremath{\\equiv}"; pp fmt lexbuf }
+  | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; pp fmt lexbuf }
+  | "<>" { fprintf fmt "\\ensuremath{\\not=}"; pp fmt lexbuf }
+  | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
+  | "*"  { fprintf fmt "\\ensuremath{\\times}"; pp fmt lexbuf }
   | "(*" [^'\n']* "*)" as s
       { fprintf fmt "\\emph{"; pp_print_string fmt s; fprintf fmt "}"; 
 	pp fmt lexbuf }
-  | eof  { () }
-  | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
-  | "*"  { fprintf fmt "\\ensuremath{\\times}"; pp fmt lexbuf }
+  | eof  
+      { () }
   | ident as s
 	{ if is_keyword s then begin
 	    if color then fprintf fmt "{\\color{blue}"
@@ -59,7 +77,14 @@ rule pp fmt = parse
             pp_print_string fmt s;
 	  pp fmt lexbuf 
 	}
-  | _ as c  { pp_print_char fmt c; pp fmt lexbuf }
+  | "\n" (space* as s)
+      { let n = count_spaces s in
+	pp_print_char fmt '\n';
+	pp_print_string fmt (String.make n ' ');
+	pp fmt lexbuf 
+      }
+  | _ as c  
+      { pp_print_char fmt c; pp fmt lexbuf }
 
 {
   let ocaml_alltt fmt s =
@@ -69,11 +94,18 @@ rule pp fmt = parse
  
   let () = Pp.add_pp_environment "ocaml" ocaml_alltt
 
-  let ocaml_texttt fmt s =
+  let texttt fmt s =
     fprintf fmt "\\texttt{";
     pp fmt (from_string s);
     fprintf fmt "}"
- 
-  let () = Pp.add_pp_macro "ocaml" ocaml_texttt
+
+  let textsf fmt s =
+    fprintf fmt "\\textsf{";
+    pp fmt (from_string s);
+    fprintf fmt "}"
+
+  let () = Pp.add_pp_macro "ocaml-tt" texttt
+  let () = Pp.add_pp_macro "ocaml-sf" textsf
+  let () = Pp.add_pp_macro "ocaml" textsf
 }
 
