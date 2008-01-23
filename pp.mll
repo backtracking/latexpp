@@ -57,6 +57,18 @@ rule pp = parse
 	  print_string (lexeme lexbuf);
 	pp lexbuf 
       }
+  | "\\" (ident as id) "{"
+      { 
+	if Hashtbl.mem ppmacros id then begin
+	  Buffer.reset buffer;
+	  let l = lexeme_start_p lexbuf in
+	  macro l lexbuf;
+	  let ppf = Hashtbl.find ppmacros id in
+	  ppf !out (Buffer.contents buffer)
+	end else 
+	  print_string (lexeme lexbuf);
+	pp lexbuf 
+      }
   | eof 
       { () }
   | _ as c
@@ -98,5 +110,49 @@ and environment e stop = parse
 	exit 1 
       }
 
+and macro l = parse 
+  | eof
+      { 
+	eprintf "%s:%d: unclosed brace@." l.pos_fname l.pos_lnum; 
+	exit 1 
+      }
+  | "}"
+      { () }
+  | "{"
+      { 
+	Buffer.add_char buffer '{'; macro (lexeme_start_p lexbuf) lexbuf;
+	Buffer.add_char buffer '}'; macro l lexbuf 
+      }
+  | _ as c
+      { 
+	if c = '\n' then newline lexbuf;
+	Buffer.add_char buffer c; macro l lexbuf 
+      }
+
 {
+
+  (* some predefined environments *)
+
+  let () = 
+    add_pp_environment "verbatim" 
+      (fun fmt s -> fprintf fmt "\\begin{verbatim}\n%s\\end{verbatim}%%\n" s)
+
+  let () = 
+    add_pp_environment "alltt" 
+      (fun fmt s -> fprintf fmt "\\begin{alltt}\n%s\\end{alltt}%%\n" s)
+
+  let () = 
+    add_pp_environment "copy" pp_print_string
+
+  let () = 
+    add_pp_environment "ignore" (fun _ _ -> ())
+
+  (* some predefined macros *)
+
+  let () = 
+    add_pp_macro "copy" pp_print_string
+
+  let () = 
+    add_pp_macro "ignore" (fun _ _ -> ())
+
 }

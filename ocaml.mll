@@ -68,5 +68,12 @@ rule pp fmt = parse
     fprintf fmt "\\end{alltt}\n"
  
   let () = Pp.add_pp_environment "ocaml" ocaml_alltt
+
+  let ocaml_texttt fmt s =
+    fprintf fmt "\\texttt{";
+    pp fmt (from_string s);
+    fprintf fmt "}"
+ 
+  let () = Pp.add_pp_macro "ocaml" ocaml_texttt
 }
 
