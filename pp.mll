@@ -20,8 +20,9 @@
 
   let ppenvs = Hashtbl.create 17
   let add_pp_environment = Hashtbl.add ppenvs
+  let remove_environment = Hashtbl.remove ppenvs
 
-  let map_environment (e,pp) = 
+  let map_environment e pp = 
     try
       Hashtbl.add ppenvs e (Hashtbl.find ppenvs pp)
     with Not_found ->
@@ -30,8 +31,9 @@
 
   let ppmacros = Hashtbl.create 17
   let add_pp_macro = Hashtbl.add ppmacros
+  let remove_macro = Hashtbl.remove ppmacros
 
-  let map_macro (m,pp) = 
+  let map_macro m pp = 
     try
       Hashtbl.add ppmacros m (Hashtbl.find ppmacros pp)
     with Not_found ->

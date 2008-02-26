@@ -2,8 +2,16 @@
 open Format
 open Options
 
-let () = List.iter Pp.map_environment env_mappings
-let () = List.iter Pp.map_macro macro_mappings
+let () = 
+  List.iter (function 
+	       | Add (s1,s2) -> Pp.map_environment s1 s2
+	       | Remove s1 -> Pp.remove_environment s1)
+    env_mappings
+let () = 
+  List.iter (function
+	       | Add (s1,s2) -> Pp.map_macro s1 s2
+	       | Remove s1 -> Pp.remove_macro s1)
+    macro_mappings
 
 let main () =
   begin match output_file with

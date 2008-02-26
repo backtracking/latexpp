@@ -6,10 +6,15 @@ let input_file = ref None
 let output_file = ref None
 let whizzytex = ref false
 let color = ref false
+
+type command = Add of string * string | Remove of string
+
 let env_mappings = ref []
-let add_env_mapping s1 s2 = env_mappings := (s1,s2) :: !env_mappings
+let add_env_mapping s1 s2 = env_mappings := Add (s1,s2) :: !env_mappings
+let remove_env s1 = env_mappings := Remove s1 :: !env_mappings
 let macro_mappings = ref []
-let add_macro_mapping s1 s2 = macro_mappings := (s1,s2) :: !macro_mappings
+let add_macro_mapping s1 s2 = macro_mappings := Add (s1,s2) :: !macro_mappings
+let remove_macro s1 = macro_mappings := Remove s1 :: !macro_mappings
 
 let set_input_file f = match !input_file with
   | None -> 
@@ -43,6 +48,10 @@ let spec =
     "-m", Tuple (let s1 = ref "" in
 		 [Set_string s1; String (fun s2 -> add_macro_mapping !s1 s2)]),
     "<id1> <id2> maps LaTeX macro id1 to preprocessor id2";
+    "-re", String remove_env, 
+    "<id> removes interpretation of environment <id>";
+    "-rm", String remove_macro, 
+    "<id> removes interpretation of macro <id>";
   ]
 
 let usage_msg = "latexpp [options] [file]"
