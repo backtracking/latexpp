@@ -44,9 +44,8 @@ let newline = '\n'
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* 
 
 rule pp = parse
-  | "\\begin{" (ident as id) "}" space* (newline? as nl)
+  | "\\begin{" (ident as id) "}" space*
       { 
-	if nl <> "" then newline lexbuf;
 	if Hashtbl.mem ppenvs id then begin
 	  Buffer.reset buffer;
 	  let e = id, lexeme_start_p lexbuf in
@@ -135,11 +134,11 @@ and macro l = parse
 
   let () = 
     add_pp_environment "verbatim" 
-      (fun fmt s -> fprintf fmt "\\begin{verbatim}\n%s\\end{verbatim}%%\n" s)
+      (fun fmt s -> fprintf fmt "\\begin{verbatim}%s\\end{verbatim}%%\n" s)
 
   let () = 
     add_pp_environment "alltt" 
-      (fun fmt s -> fprintf fmt "\\begin{alltt}\n%s\\end{alltt}%%\n" s)
+      (fun fmt s -> fprintf fmt "\\begin{alltt}%s\\end{alltt}%%\n" s)
 
   let () = 
     add_pp_environment "copy" pp_print_string

@@ -37,6 +37,17 @@
     done;
     !c
 
+  let indentation fmt n =
+    let space = 0.5 *. (float n) in
+    fprintf fmt "\n\\noindent\\kern%2.2fem" space
+
+  let print_ident fmt =
+    let char = function
+      | '_' -> pp_print_string fmt "\\_{}"
+      | c -> pp_print_char fmt c
+    in
+    String.iter char
+
 }
 
 let space = [' ' '\t']
@@ -50,7 +61,6 @@ rule pp fmt = parse
   | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
-  | '\n' { fprintf fmt "\n"; pp fmt lexbuf }
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
   | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
   | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
@@ -63,10 +73,9 @@ rule pp fmt = parse
   | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
   | "*"  { fprintf fmt "\\ensuremath{\\times}"; pp fmt lexbuf }
   | "(*" [^'\n']* "*)" as s
-      { fprintf fmt "\\emph{"; pp_print_string fmt s; fprintf fmt "}"; 
+      { fprintf fmt "\\emph{"; if color then fprintf fmt "\\color{red}";
+	pp_print_string fmt s; fprintf fmt "}"; 
 	pp fmt lexbuf }
-  | eof  
-      { () }
   | ident as s
 	{ if is_keyword s then begin
 	    if color then fprintf fmt "{\\color{blue}"
@@ -74,24 +83,33 @@ rule pp fmt = parse
 	    pp_print_string fmt s;
 	    fprintf fmt "}"
 	  end else 
-            pp_print_string fmt s;
+            print_ident fmt s;
 	  pp fmt lexbuf 
 	}
   | "\n" (space* as s)
-      { let n = count_spaces s in
-	pp_print_char fmt '\n';
-	pp_print_string fmt (String.make n ' ');
+      { indentation fmt (count_spaces s);
 	pp fmt lexbuf 
       }
+  | "\n" space* eof
+      { pp_print_string fmt "\n" }
+  | eof  
+      { () }
   | _ as c  
       { pp_print_char fmt c; pp fmt lexbuf }
 
 {
   let ocaml_alltt fmt s =
-    fprintf fmt "\\begin{alltt}\n";
+    fprintf fmt "\\begin{alltt}";
     pp fmt (from_string s);
-    fprintf fmt "\\end{alltt}\n"
+    fprintf fmt "\\end{alltt}%%\n"
  
+  let ocaml_sf fmt s =
+    fprintf fmt "\\bgroup\\begin{obeylines}\\sf\\medskip\n";
+    pp fmt (from_string s);
+    fprintf fmt "\\end{obeylines}\\medskip\\egroup\\noindent\n"
+ 
+  let () = Pp.add_pp_environment "ocaml-tt" ocaml_alltt
+  let () = Pp.add_pp_environment "ocaml-sf" ocaml_sf
   let () = Pp.add_pp_environment "ocaml" ocaml_alltt
 
   let texttt fmt s =

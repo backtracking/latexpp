@@ -1,0 +1,16 @@
+
+(this is the only documentation so far)
+
+predefined environments:
+- verbatim
+- alltt
+- copy: simply copies its argument
+- ignore: /dev/null
+
+- ocaml-tt
+- ocaml-sf
+- ocaml (mapped to ocaml-sf)
+
+predefined macros:
+- copy: simply copies its argument
+- ignore: /dev/null
