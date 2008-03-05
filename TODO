@@ -1,0 +1,21 @@
+
+* options par ligne de commande ou par commentaire LaTeX de la forme
+
+	%latexpp ...
+
+  en particulier le mapping env/macro doit pouvoir être réalisé par %latexpp
+
+* options des préprocesseurs
+
+  - globales à tous les environnements / toutes les macros
+
+    . par la ligne de commande : 
+    . par %latexpp ocaml [frame=yes]
+
+  - locales à l'environnement / à la macro, sous la forme
+
+    . \begin{ocaml}[frame=yes] ... \end{ocaml}
+    . \ocaml[color=yes]{...}
+
+  remarque : l'option -c (color) doit devenir un cas comme les autres
+  (-set x pourrait être un raccourci pour -option x yes)
