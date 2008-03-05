@@ -48,6 +48,8 @@
     in
     String.iter char
 
+  let color () = is_set "color"
+
 }
 
 let space = [' ' '\t']
@@ -73,12 +75,12 @@ rule pp fmt = parse
   | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
   | "*"  { fprintf fmt "\\ensuremath{\\times}"; pp fmt lexbuf }
   | "(*" [^'\n']* "*)" as s
-      { fprintf fmt "\\emph{"; if color then fprintf fmt "\\color{red}";
+      { fprintf fmt "\\emph{"; if color () then fprintf fmt "\\color{red}";
 	pp_print_string fmt s; fprintf fmt "}"; 
 	pp fmt lexbuf }
   | ident as s
 	{ if is_keyword s then begin
-	    if color then fprintf fmt "{\\color{blue}"
+	    if color () then fprintf fmt "{\\color{blue}"
 	    else fprintf fmt "\\textbf{";
 	    pp_print_string fmt s;
 	    fprintf fmt "}"
@@ -110,7 +112,7 @@ rule pp fmt = parse
  
   let () = Pp.add_pp_environment "ocaml-tt" ocaml_alltt
   let () = Pp.add_pp_environment "ocaml-sf" ocaml_sf
-  let () = Pp.add_pp_environment "ocaml" ocaml_alltt
+  let () = Pp.add_pp_environment "ocaml" ocaml_sf
 
   let texttt fmt s =
     fprintf fmt "\\texttt{";

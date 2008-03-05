@@ -62,6 +62,10 @@ $(NAME).byte: $(CMO)
 $(NAME).opt: $(CMX)
 	$(OCAMLOPT) $(OFLAGS) -o $@ $^
 
+test: latexpp.opt
+	./latexpp.opt test.tex -o testpp.tex
+	latex testpp
+
 VERSION=0.1
 
 version.ml: Makefile

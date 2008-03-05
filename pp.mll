@@ -39,21 +39,46 @@
     with Not_found ->
       eprintf "latexpp: unknown preprocesseur `%s'@." pp; 
       exit 1
+
+  let error l msg =
+    eprintf "%s:%d: %s@." l.pos_fname l.pos_lnum msg; 
+    exit 1 
+
 }
 
 let space = [' ' '\t' '\r']
 let newline = '\n'
-let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* 
+let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9' '-']* 
 
 rule pp = parse
-  | "\\begin{" (ident as id) "}" space*
+  | "%latexpp" space+ "-g" space+ (ident as o) space+ (ident as v) space* '\n'
+      { 
+	Options.add o v;
+	newline lexbuf;
+	pp lexbuf
+      }
+  | "%latexpp" space+ ("-e" | "-m" as o) 
+    space+ (ident as id1) space+ (ident as id2) space* '\n'
+      {
+	(if o = "-e" then map_environment else map_macro) id1 id2;
+	newline lexbuf;
+	pp lexbuf
+      }
+  | "%" [^ '\n']* '\n'
+      { 
+	print_string (lexeme lexbuf);
+	newline lexbuf;
+	pp lexbuf 
+      }
+  | "\\begin{" (ident as id) "}" ('['? as o) space*
       { 
 	if Hashtbl.mem ppenvs id then begin
 	  Buffer.reset buffer;
 	  let e = id, lexeme_start_p lexbuf in
+	  let ol = match o with "" -> [] | _ -> options (snd e) lexbuf in
 	  environment e true lexbuf;
   	  let ppf = Hashtbl.find ppenvs id in
-	  ppf !out (Buffer.contents buffer)
+	  with_options ol (ppf !out) (Buffer.contents buffer)
 	end else 
 	  print_string (lexeme lexbuf);
 	pp lexbuf 
@@ -104,12 +129,7 @@ and environment e stop = parse
 	Buffer.add_char buffer c; environment e stop lexbuf 
       }
   | eof
-      { 
-	let id, l = e in
-	eprintf 
-	  "%s:%d: unterminated environment %s@." l.pos_fname l.pos_lnum id; 
-	exit 1 
-      }
+      { error (snd e) "unterminated environment" }
 
 and macro l = parse 
   | eof
@@ -129,6 +149,33 @@ and macro l = parse
 	if c = '\n' then newline lexbuf;
 	Buffer.add_char buffer c; macro l lexbuf 
       }
+
+and options l = parse
+  | ']' space* 
+      { [] }
+  | space+
+      { options l lexbuf }
+  | newline
+      { newline lexbuf; options l lexbuf }
+  | (ident as id) space* '=' space* 
+      { 
+	let v = value l id lexbuf in
+	(id, v) :: options l lexbuf
+      }
+  | eof
+      { error l "unterminated options" }
+  | _
+      { error l "syntax error in options" }
+
+and value l o = parse
+  | [^ ']' ' ' '\r' '\t' '\n']+ as v
+      { v }
+  | '"' ([^ '"']* as v) '"'
+      { v }
+  | eof
+      { error l "unterminated options" }
+  | _
+      { error l ("syntax error in value for option " ^ o) }
 
 {
 
