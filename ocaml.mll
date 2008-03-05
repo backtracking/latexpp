@@ -68,6 +68,7 @@ rule pp fmt = parse
   | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
   | "<=" { fprintf fmt "\\ensuremath{\\le}"; pp fmt lexbuf }
   | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
+  | "|" { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
   | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
   | "==" { fprintf fmt "\\ensuremath{\\equiv}"; pp fmt lexbuf }
   | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; pp fmt lexbuf }
