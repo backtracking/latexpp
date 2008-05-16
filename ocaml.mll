@@ -39,7 +39,7 @@
 
   let indentation fmt n =
     let space = 0.5 *. (float n) in
-    fprintf fmt "\n\\noindent\\kern%2.2fem" space
+    fprintf fmt "\n\\noindent\\hspace*{%2.2fem}" space
 
   let print_ident fmt =
     let char = function
@@ -61,6 +61,8 @@ rule pp fmt = parse
   | '#' { fprintf fmt "\\#{}"; pp fmt lexbuf }
   | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
+  | ':'  { fprintf fmt "\\ensuremath{\\colon}"; pp fmt lexbuf }
+  | "::"  { fprintf fmt "\\ensuremath{\\colon\\colon}"; pp fmt lexbuf }
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
@@ -90,7 +92,7 @@ rule pp fmt = parse
 	  pp fmt lexbuf 
 	}
   | "\n" (space* as s)
-      { indentation fmt (count_spaces s);
+      { fprintf fmt "~\\linebreak"; indentation fmt (count_spaces s);
 	pp fmt lexbuf 
       }
   | "\n" space* eof
@@ -107,9 +109,9 @@ rule pp fmt = parse
     fprintf fmt "\\end{alltt}%%\n"
  
   let ocaml_sf fmt s =
-    fprintf fmt "\\bgroup\\begin{obeylines}\\sf\\medskip\n";
+    fprintf fmt "\\bgroup\\sf\\medskip\n";
     pp fmt (from_string s);
-    fprintf fmt "\\end{obeylines}\\medskip\\egroup\\noindent\n"
+    fprintf fmt "\\medskip\\egroup\\noindent\n"
  
   let () = Pp.add_pp_environment "ocaml-tt" ocaml_alltt
   let () = Pp.add_pp_environment "ocaml-sf" ocaml_sf
