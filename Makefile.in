@@ -81,7 +81,7 @@ install-indep:
 	mkdir -p $(MANDIR)/man1
 	cp -f $(NAME).1 $(MANDIR)/man1
 
-install: install-indep
+install: 
 	cp -f $(NAME).$(OCAMLBEST) $(BINDIR)/$(NAME)$(EXE)
 
 install-byte: install-indep
