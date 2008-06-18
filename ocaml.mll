@@ -67,6 +67,8 @@ rule pp fmt = parse
   | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
   | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
+  | ">" { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
+  | "<" { fprintf fmt "\\ensuremath{<}"; pp fmt lexbuf }
   | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
   | "<=" { fprintf fmt "\\ensuremath{\\le}"; pp fmt lexbuf }
   | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
@@ -77,10 +79,12 @@ rule pp fmt = parse
   | "<>" { fprintf fmt "\\ensuremath{\\not=}"; pp fmt lexbuf }
   | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
   | "*"  { fprintf fmt "\\ensuremath{\\times}"; pp fmt lexbuf }
-  | "(*" [^'\n']* "*)" as s
+  | "(*" 
       { 
-	fprintf fmt "\\emph{"; if color () then fprintf fmt "\\color{red}";
-	pp_print_string fmt s; fprintf fmt "}"; 
+	fprintf fmt "\\emph{"; 
+	if color () then fprintf fmt "\\color{red}";
+	pp_print_string fmt "(*"; comment fmt lexbuf; 
+	fprintf fmt "}"; 
 	pp fmt lexbuf 
       }
   | ident as s
@@ -103,6 +107,23 @@ rule pp fmt = parse
   | _ as c  
       { pp_print_char fmt c; pp fmt lexbuf }
 
+and comment fmt = parse
+  | "(*" as s 
+      { pp_print_string fmt s; comment fmt lexbuf; comment fmt lexbuf }
+  | "*)" as s
+      { pp_print_string fmt s }
+  | '{'  { fprintf fmt "\\{"; comment fmt lexbuf }
+  | '}'  { fprintf fmt "\\}"; comment fmt lexbuf }
+  | '#' { fprintf fmt "\\#{}"; comment fmt lexbuf }
+  | '_'  { fprintf fmt "\\_{}"; comment fmt lexbuf }
+  | '%'  { fprintf fmt "\\%%{}"; comment fmt lexbuf }
+  | ">" { fprintf fmt "\\ensuremath{>}"; comment fmt lexbuf }
+  | "<" { fprintf fmt "\\ensuremath{<}"; comment fmt lexbuf }
+  | eof  
+      { () }
+  | _ as c  
+      { pp_print_char fmt c; comment fmt lexbuf }
+
 and start_of_line fmt = parse
   | space* as s
       { indentation fmt (count_spaces s); pp fmt lexbuf }
@@ -116,9 +137,9 @@ and start_of_line fmt = parse
     fprintf fmt "\\end{alltt}%%\n"
  
   let ocaml_sf fmt s =
-    fprintf fmt "\\bgroup\\sf\\medskip\\begin{flushleft}\n";
+    fprintf fmt "\\bgroup\\sf\\begin{flushleft}\n";
     start_of_line fmt (from_string s);
-    fprintf fmt "\\end{flushleft}\\medskip\\egroup\\noindent\n"
+    fprintf fmt "\\end{flushleft}\\egroup\\noindent\n"
  
   let () = Pp.add_pp_environment "ocaml-tt" ocaml_alltt
   let () = Pp.add_pp_environment "ocaml-sf" ocaml_sf
