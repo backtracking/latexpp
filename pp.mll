@@ -70,7 +70,7 @@ rule pp = parse
 	newline lexbuf;
 	pp lexbuf 
       }
-  | "\\begin{" (ident as id) "}" ('['? as o) space*
+  | "\\begin{" (ident as id) "}" ('['? as o) space* '\n'?
       { 
 	if Hashtbl.mem ppenvs id then begin
 	  Buffer.reset buffer;
@@ -151,7 +151,7 @@ and macro l = parse
       }
 
 and options l = parse
-  | ']' space* 
+  | ']' space* '\n'?
       { [] }
   | space+
       { options l lexbuf }

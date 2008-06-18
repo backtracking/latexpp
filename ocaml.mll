@@ -78,29 +78,36 @@ rule pp fmt = parse
   | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
   | "*"  { fprintf fmt "\\ensuremath{\\times}"; pp fmt lexbuf }
   | "(*" [^'\n']* "*)" as s
-      { fprintf fmt "\\emph{"; if color () then fprintf fmt "\\color{red}";
+      { 
+	fprintf fmt "\\emph{"; if color () then fprintf fmt "\\color{red}";
 	pp_print_string fmt s; fprintf fmt "}"; 
-	pp fmt lexbuf }
-  | ident as s
-	{ if is_keyword s then begin
-	    if color () then fprintf fmt "{\\color{blue}"
-	    else fprintf fmt "\\textbf{";
-	    pp_print_string fmt s;
-	    fprintf fmt "}"
-	  end else 
-            print_ident fmt s;
-	  pp fmt lexbuf 
-	}
-  | "\n" (space* as s)
-      { fprintf fmt "~\\linebreak"; indentation fmt (count_spaces s);
 	pp fmt lexbuf 
       }
+  | ident as s
+      { 
+	if is_keyword s then begin
+	  if color () then fprintf fmt "{\\color{blue}"
+	  else fprintf fmt "\\textbf{";
+	  pp_print_string fmt s;
+	  fprintf fmt "}"
+	end else 
+          print_ident fmt s;
+	pp fmt lexbuf 
+      }
+  | "\n" 
+      { fprintf fmt "~\\linebreak"; start_of_line fmt lexbuf }
   | "\n" space* eof
       { pp_print_string fmt "\n" }
   | eof  
       { () }
   | _ as c  
       { pp_print_char fmt c; pp fmt lexbuf }
+
+and start_of_line fmt = parse
+  | space* as s
+      { indentation fmt (count_spaces s); pp fmt lexbuf }
+  | eof 
+      { () }
 
 {
   let ocaml_alltt fmt s =
@@ -109,9 +116,9 @@ rule pp fmt = parse
     fprintf fmt "\\end{alltt}%%\n"
  
   let ocaml_sf fmt s =
-    fprintf fmt "\\bgroup\\sf\\medskip\n";
-    pp fmt (from_string s);
-    fprintf fmt "\\medskip\\egroup\\noindent\n"
+    fprintf fmt "\\bgroup\\sf\\medskip\\begin{flushleft}\n";
+    start_of_line fmt (from_string s);
+    fprintf fmt "\\end{flushleft}\\medskip\\egroup\\noindent\n"
  
   let () = Pp.add_pp_environment "ocaml-tt" ocaml_alltt
   let () = Pp.add_pp_environment "ocaml-sf" ocaml_sf
