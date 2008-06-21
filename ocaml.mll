@@ -62,7 +62,8 @@ rule pp fmt = parse
   | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
   | ':'  { fprintf fmt "\\ensuremath{\\colon}"; pp fmt lexbuf }
-  | "::"  { fprintf fmt "\\ensuremath{\\colon\\!\\!\\colon}"; pp fmt lexbuf }
+  | "::"  { fprintf fmt "\\ensuremath{\\colon\\!\\!\\colon\\!}"; 
+	    pp fmt lexbuf }
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
@@ -75,6 +76,7 @@ rule pp fmt = parse
   | "|" { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
   | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
   | "==" { fprintf fmt "\\ensuremath{\\equiv}"; pp fmt lexbuf }
+  | ":=" { fprintf fmt "\\ensuremath{:=}"; pp fmt lexbuf }
   | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; pp fmt lexbuf }
   | "<>" { fprintf fmt "\\ensuremath{\\not=}"; pp fmt lexbuf }
   | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
