@@ -48,7 +48,7 @@ all: $(OCAMLBEST)
 # bytecode and native-code compilation
 ######################################
 
-CMO = version.cmo options.cmo pp.cmo ocaml.cmo mlpost_pp.cmo \
+CMO = version.cmo options.cmo pp.cmo ocaml.cmo c.cmo mlpost_pp.cmo \
       metapost.cmo main.cmo
 CMX = $(CMO:.cmo=.cmx)
 
