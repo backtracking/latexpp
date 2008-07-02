@@ -68,19 +68,21 @@ rule pp fmt = parse
   | ':'  { fprintf fmt "\\ensuremath{\\colon}"; pp fmt lexbuf }
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
-  | '*'  { fprintf fmt "\\ensuremath{\\star}"; pp fmt lexbuf }
   | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf }
-  | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
-  | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
+(*
+  | "|" { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
   | ">" { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
   | "<" { fprintf fmt "\\ensuremath{<}"; pp fmt lexbuf }
+  | '*'  { fprintf fmt "\\ensuremath{\\star}"; pp fmt lexbuf }
+  | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
+  | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
   | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
   | "<=" { fprintf fmt "\\ensuremath{\\le}"; pp fmt lexbuf }
   | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
-  | "|" { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
   | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
   | "==" { fprintf fmt "\\ensuremath{\\equiv}"; pp fmt lexbuf }
   | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; pp fmt lexbuf }
+*)
   | "/*" 
       { 
 	fprintf fmt "\\emph{"; 
@@ -128,17 +130,19 @@ and comment fmt = parse
   | '#' { fprintf fmt "\\#{}"; comment fmt lexbuf }
   | '_'  { fprintf fmt "\\_{}"; comment fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; comment fmt lexbuf }
+  | "&" { fprintf fmt "\\&{}"; comment fmt lexbuf }
+(*
+  | "|" { fprintf fmt "\\ensuremath{|}"; comment fmt lexbuf }
   | ">" { fprintf fmt "\\ensuremath{>}"; comment fmt lexbuf }
   | "<" { fprintf fmt "\\ensuremath{<}"; comment fmt lexbuf }
   | ">=" { fprintf fmt "\\ensuremath{\\ge}"; comment fmt lexbuf }
   | "<=" { fprintf fmt "\\ensuremath{\\le}"; comment fmt lexbuf }
   | "=>" { fprintf fmt "\\ensuremath{\\Rightarrow}"; comment fmt lexbuf }
-  | "&" { fprintf fmt "\\&{}"; comment fmt lexbuf }
   | "&&" { fprintf fmt "\\ensuremath{\\land}"; comment fmt lexbuf }
-  | "|" { fprintf fmt "\\ensuremath{|}"; comment fmt lexbuf }
   | "||" { fprintf fmt "\\ensuremath{\\lor}"; comment fmt lexbuf }
   | "==" { fprintf fmt "\\ensuremath{\\equiv}"; comment fmt lexbuf }
   | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; comment fmt lexbuf }
+*)
   | " " { fprintf fmt "~"; comment fmt lexbuf }
   | eof  
       { () }
