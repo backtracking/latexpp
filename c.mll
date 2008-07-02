@@ -91,6 +91,14 @@ rule pp fmt = parse
 	fprintf fmt "}"; 
 	pp fmt lexbuf 
       }
+  | "//" 
+      { 
+	fprintf fmt "\\emph{"; 
+	if color () then fprintf fmt "\\color{red}";
+	pp_print_string fmt "//"; one_line_comment fmt lexbuf; 
+	fprintf fmt "}\\linebreak"; start_of_line fmt lexbuf;
+	pp fmt lexbuf 
+      }
   | ident as s
       { 
 	if is_keyword s then begin
@@ -148,6 +156,20 @@ and comment fmt = parse
       { () }
   | _ as c  
       { pp_print_char fmt c; comment fmt lexbuf }
+
+and one_line_comment fmt = parse
+  | "\n" { () }
+  | '\\' 
+      { fprintf fmt "\\ensuremath{\\backslash}"; one_line_comment fmt lexbuf }
+  | '{'  { fprintf fmt "\\{"; one_line_comment fmt lexbuf }
+  | '}'  { fprintf fmt "\\}"; one_line_comment fmt lexbuf }
+  | '#' { fprintf fmt "\\#{}"; one_line_comment fmt lexbuf }
+  | '_'  { fprintf fmt "\\_{}"; one_line_comment fmt lexbuf }
+  | '%'  { fprintf fmt "\\%%{}"; one_line_comment fmt lexbuf }
+  | "&" { fprintf fmt "\\&{}"; one_line_comment fmt lexbuf }
+  | " " { fprintf fmt "~"; one_line_comment fmt lexbuf }
+  | eof  { () }
+  | _ as c { pp_print_char fmt c; one_line_comment fmt lexbuf }
 
 and start_of_line fmt = parse
   | space* as s
