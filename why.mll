@@ -1,31 +1,23 @@
 
-(* C preprocessor *)
+(* Why preprocessor *)
 
 {
   open Lexing 
   open Format
   open Options
 
-  let c_keywords = 
+  let why_keywords = 
     let h = Hashtbl.create 97 in 
     List.iter (fun s -> Hashtbl.add h s ()) 
       [ 
-	"if"; "while"; "for"; "register"; "else";
-	"break"; "return";
+	"logic"; "axiom"; "parameter"; "predicate"; "type";
+
+	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in";
+	"assert"; "begin"; "end"; 
       ]; 
     h
 
-  let is_keyword = Hashtbl.mem c_keywords  
-
-  let c_types = 
-    let h = Hashtbl.create 97 in 
-    List.iter (fun s -> Hashtbl.add h s ()) 
-      [ 
-	"int"; "void";
-      ]; 
-    h
-
-  let is_type = Hashtbl.mem c_types
+  let is_keyword = Hashtbl.mem why_keywords  
 
   let tab_size = 8
 
@@ -60,14 +52,15 @@ let space = [' ' '\t']
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* 
 
 rule pp fmt = parse
-  | '{'  { fprintf fmt "\\{"; pp fmt lexbuf }
-  | '}'  { fprintf fmt "\\}"; pp fmt lexbuf }
+  | '{'  { if color () then fprintf fmt "{\\color{red}";
+	   fprintf fmt "\\{"; pp fmt lexbuf }
+  | '}'  { fprintf fmt "\\}"; 
+	   if color () then fprintf fmt "}"; pp fmt lexbuf }
   | '#' { fprintf fmt "\\#{}"; pp fmt lexbuf }
   | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
   | ':'  { fprintf fmt "\\ensuremath{\\colon}"; pp fmt lexbuf }
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
-  | '~'  { fprintf fmt "\\~{}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
   | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf }
 (*
@@ -84,31 +77,18 @@ rule pp fmt = parse
   | "==" { fprintf fmt "\\ensuremath{\\equiv}"; pp fmt lexbuf }
   | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; pp fmt lexbuf }
 *)
-  | "/*" 
+  | "(*" 
       { 
 	fprintf fmt "\\emph{"; 
-	if color () then fprintf fmt "\\color{red}";
-	pp_print_string fmt "/*"; comment fmt lexbuf; 
+	if color () then fprintf fmt "\\color{violet}";
+	pp_print_string fmt "(*"; comment fmt lexbuf; 
 	fprintf fmt "}"; 
-	pp fmt lexbuf 
-      }
-  | "//" 
-      { 
-	fprintf fmt "\\emph{"; 
-	if color () then fprintf fmt "\\color{red}";
-	pp_print_string fmt "//"; one_line_comment fmt lexbuf; 
-	fprintf fmt "}\\linebreak"; start_of_line fmt lexbuf;
 	pp fmt lexbuf 
       }
   | ident as s
       { 
 	if is_keyword s then begin
 	  if color () then fprintf fmt "{\\color{blue}"
-	  else fprintf fmt "\\textbf{";
-	  pp_print_string fmt s;
-	  fprintf fmt "}"
-	end else if is_type s then begin
-	  if color () then fprintf fmt "{\\color{darkgreen}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
 	  fprintf fmt "}"
@@ -128,11 +108,13 @@ rule pp fmt = parse
       { pp_print_char fmt c; pp fmt lexbuf }
 
 and comment fmt = parse
+  | "(*" as s 
+      { pp_print_string fmt s; comment fmt lexbuf; comment fmt lexbuf }
+  | "*)" as s
+      { pp_print_string fmt s }
   | "\n" (space* as s)
       { fprintf fmt "~\\linebreak"; indentation fmt (count_spaces s);
 	comment fmt lexbuf }
-  | "*/" as s
-      { pp_print_string fmt s }
   | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; comment fmt lexbuf }
   | '{'  { fprintf fmt "\\{"; comment fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; comment fmt lexbuf }
@@ -158,20 +140,6 @@ and comment fmt = parse
   | _ as c  
       { pp_print_char fmt c; comment fmt lexbuf }
 
-and one_line_comment fmt = parse
-  | "\n" { () }
-  | '\\' 
-      { fprintf fmt "\\ensuremath{\\backslash}"; one_line_comment fmt lexbuf }
-  | '{'  { fprintf fmt "\\{"; one_line_comment fmt lexbuf }
-  | '}'  { fprintf fmt "\\}"; one_line_comment fmt lexbuf }
-  | '#' { fprintf fmt "\\#{}"; one_line_comment fmt lexbuf }
-  | '_'  { fprintf fmt "\\_{}"; one_line_comment fmt lexbuf }
-  | '%'  { fprintf fmt "\\%%{}"; one_line_comment fmt lexbuf }
-  | "&" { fprintf fmt "\\&{}"; one_line_comment fmt lexbuf }
-  | " " { fprintf fmt "~"; one_line_comment fmt lexbuf }
-  | eof  { () }
-  | _ as c { pp_print_char fmt c; one_line_comment fmt lexbuf }
-
 and start_of_line fmt = parse
   | space* as s
       { indentation fmt (count_spaces s) }
@@ -180,28 +148,28 @@ and start_of_line fmt = parse
 
 
 {
-  let c_alltt fmt s =
+  let why_alltt fmt s =
     fprintf fmt "\\begin{alltt}";
     let lb = from_string s in
     start_of_line fmt lb; pp fmt lb;
     fprintf fmt "\\end{alltt}%%\n"
  
-  let c_tt fmt s =
+  let why_tt fmt s =
     fprintf fmt "\\begin{flushleft}\\ttfamily\\parindent 0pt\n";
     let lb = from_string s in
     start_of_line fmt lb; pp fmt lb;
     fprintf fmt "\\end{flushleft}%%\n"
  
-  let c_sf fmt s =
+  let why_sf fmt s =
     fprintf fmt "\\bgroup\\sf\\begin{flushleft}\n";
     let lb = from_string s in
     start_of_line fmt lb; pp fmt lb;
     fprintf fmt "\\end{flushleft}\\egroup\\noindent\n"
  
-  let () = Pp.add_pp_environment "c-alltt" c_alltt
-  let () = Pp.add_pp_environment "c-tt" c_tt
-  let () = Pp.add_pp_environment "c-sf" c_sf
-  let () = Pp.add_pp_environment "c" c_tt
+  let () = Pp.add_pp_environment "why-alltt" why_alltt
+  let () = Pp.add_pp_environment "why-tt" why_tt
+  let () = Pp.add_pp_environment "why-sf" why_sf
+  let () = Pp.add_pp_environment "why" why_tt
 
   let texttt fmt s =
     fprintf fmt "\\texttt{";
@@ -213,8 +181,8 @@ and start_of_line fmt = parse
     pp fmt (from_string s);
     fprintf fmt "}"
 
-  let () = Pp.add_pp_macro "c-tt" texttt
-  let () = Pp.add_pp_macro "c-sf" textsf
-  let () = Pp.add_pp_macro "c" textsf
+  let () = Pp.add_pp_macro "why-tt" texttt
+  let () = Pp.add_pp_macro "why-sf" textsf
+  let () = Pp.add_pp_macro "why" textsf
 }
 
