@@ -140,6 +140,7 @@ and comment fmt = parse
   | '_'  { fprintf fmt "\\_{}"; comment fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; comment fmt lexbuf }
   | "&" { fprintf fmt "\\&{}"; comment fmt lexbuf }
+  | '~'  { fprintf fmt "\\~{}"; pp fmt lexbuf }
 (*
   | "|" { fprintf fmt "\\ensuremath{|}"; comment fmt lexbuf }
   | ">" { fprintf fmt "\\ensuremath{>}"; comment fmt lexbuf }
