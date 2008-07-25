@@ -53,6 +53,7 @@
     String.iter char
 
   let color () = is_set "color"
+  let tt = ref false
 
 }
 
@@ -70,6 +71,20 @@ rule pp fmt = parse
   | '~'  { fprintf fmt "\\~{}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
   | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf }
+  | ">" { if !tt then fprintf fmt ">" else fprintf fmt "\\ensuremath{>}"; 
+	  pp fmt lexbuf }
+  | "<" { if !tt then fprintf fmt "<" else fprintf fmt "\\ensuremath{<}"; 
+	  pp fmt lexbuf }
+  | ">=" { if !tt then fprintf fmt ">=" else fprintf fmt "\\ensuremath{\\ge}"; 
+	   pp fmt lexbuf }
+  | "<=" { if !tt then fprintf fmt "<=" else fprintf fmt "\\ensuremath{\\le}"; 
+	   pp fmt lexbuf }
+  | "==" 
+      { if !tt then fprintf fmt "==" else fprintf fmt "\\ensuremath{\\equiv}"; 
+	pp fmt lexbuf }
+  | "!=" 
+  { if !tt then fprintf fmt "!=" else fprintf fmt "\\ensuremath{\\not\\equiv}";
+    pp fmt lexbuf }
 (*
   | "|" { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
   | ">" { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
@@ -77,12 +92,8 @@ rule pp fmt = parse
   | '*'  { fprintf fmt "\\ensuremath{\\star}"; pp fmt lexbuf }
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
   | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
-  | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
-  | "<=" { fprintf fmt "\\ensuremath{\\le}"; pp fmt lexbuf }
   | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
   | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
-  | "==" { fprintf fmt "\\ensuremath{\\equiv}"; pp fmt lexbuf }
-  | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; pp fmt lexbuf }
 *)
   | "/*" 
       { 
@@ -140,7 +151,9 @@ and comment fmt = parse
   | '_'  { fprintf fmt "\\_{}"; comment fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; comment fmt lexbuf }
   | "&" { fprintf fmt "\\&{}"; comment fmt lexbuf }
-  | '~'  { fprintf fmt "\\~{}"; pp fmt lexbuf }
+  | '~'  { fprintf fmt "\\~{}"; comment fmt lexbuf }
+  | ">" { fprintf fmt "\\ensuremath{>}"; comment fmt lexbuf }
+  | "<" { fprintf fmt "\\ensuremath{<}"; comment fmt lexbuf }
 (*
   | "|" { fprintf fmt "\\ensuremath{|}"; comment fmt lexbuf }
   | ">" { fprintf fmt "\\ensuremath{>}"; comment fmt lexbuf }
@@ -184,13 +197,13 @@ and start_of_line fmt = parse
   let c_alltt fmt s =
     fprintf fmt "\\begin{alltt}";
     let lb = from_string s in
-    start_of_line fmt lb; pp fmt lb;
+    tt := true; start_of_line fmt lb; pp fmt lb; tt := false;
     fprintf fmt "\\end{alltt}%%\n"
  
   let c_tt fmt s =
     fprintf fmt "\\begin{flushleft}\\ttfamily\\parindent 0pt\n";
     let lb = from_string s in
-    start_of_line fmt lb; pp fmt lb;
+    tt := true; start_of_line fmt lb; pp fmt lb; tt := false;
     fprintf fmt "\\end{flushleft}%%\n"
  
   let c_sf fmt s =
