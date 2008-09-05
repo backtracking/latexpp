@@ -1,1 +1,1 @@
-export MKSLICE="./latexpp.opt -w -e ocaml ocaml-sf"
+export MKSLICE="./latexpp.opt -w -c"
