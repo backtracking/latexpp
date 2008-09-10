@@ -7,3 +7,4 @@ semantic.cache
 testpp.tex
 _whizzy_slides.aux _whizzy_slides_d _whizzy_slides.dif _whizzy_slides.fmt _whizzy_slides.last _whizzy_slides.log _whizzy_slides.nav _whizzy_slides.new _whizzy_slides_nil.aux _whizzy_slides_nil.log _whizzy_slides_nil.nav _whizzy_slides_nil.out _whizzy_slides_nil.snm _whizzy_slides_nil.tex _whizzy_slides_nil.toc _whizzy_slides_nil.waux _whizzy_slides.out _whizzy_slides.raux _whizzy_slides.snm _whizzy_slides.tex _whizzy_slides.toc _whizzy_slides.wpdf
 ._whizzy_slides.tex slides.nav _whizzy_slides.nav _whizzy_slides_nil.nav slides.out _whizzy_slides_nil.out _whizzy_slides.out slides.pdf slides.raux slides.snm slides.toc slides.waux slides.wpdf
+c.ml tt.ml why.ml

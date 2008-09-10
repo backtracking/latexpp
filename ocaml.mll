@@ -5,6 +5,7 @@
   open Lexing 
   open Format
   open Options
+  open Util
 
   let ocaml_keywords = 
     let h = Hashtbl.create 97 in 
@@ -22,31 +23,6 @@
     h
 
   let is_keyword = Hashtbl.mem ocaml_keywords  
-
-  let tab_size = 8
-
-  let count_spaces s =
-    let c = ref 0 in
-    for i = 0 to String.length s - 1 do
-      c := !c + (
-        if s.[i] = '\t' then
-	  tab_size - (!c mod tab_size)
-	else
-	  1
-      )
-    done;
-    !c
-
-  let indentation fmt n =
-    let space = 0.5 *. (float n) in
-    fprintf fmt "\n\\noindent\\hspace*{%2.2fem}" space
-
-  let print_ident fmt =
-    let char = function
-      | '_' -> pp_print_string fmt "\\_{}"
-      | c -> pp_print_char fmt c
-    in
-    String.iter char
 
   let color () = is_set "color"
 
@@ -133,34 +109,6 @@ and start_of_line fmt = parse
   | eof 
       { () }
 
-and raw fmt = parse
-  | '{'  { pp_print_string fmt "\\{"; raw fmt lexbuf }
-  | '}'  { pp_print_string fmt "\\}"; raw fmt lexbuf }
-  | '\\' { pp_print_string fmt "\\ensuremath{\\backslash}"; raw fmt lexbuf }
-  | "\\pause" | "\\tab"
-         { pp_print_string fmt (lexeme lexbuf); raw fmt lexbuf }
-  | '#' { pp_print_string fmt "\\#{}";
-	  raw fmt lexbuf }
-  | ' '  { pp_print_string fmt "\\hspace*{1ex}"; raw fmt lexbuf }
-  | " :"  { pp_print_string fmt "\\hspace*{0ex}:"; raw fmt lexbuf }
-  | "::"  { pp_print_string fmt ":\\hspace{-1ex}:"; raw fmt lexbuf }
-  | " ::" { pp_print_string fmt "\\hspace*{0ex}:\\hspace*{-1ex}:"; raw fmt lexbuf }
-  | '_'  { pp_print_string fmt "\\_{}"; raw fmt lexbuf }
-  | '%'  { pp_print_string fmt "\\%{}"; raw fmt lexbuf }
-  | ";;"  { pp_print_string fmt ";\\hspace*{-0.5ex};"; raw fmt lexbuf }
-  | '&'  { pp_print_string fmt "\\&{}"; raw fmt lexbuf }
-  | '%'  { pp_print_string fmt "\\%{}"; raw fmt lexbuf }
-  | '\n' { pp_print_string fmt "\\\\\n"; raw fmt lexbuf }
-  | "\n" space* eof { pp_print_string fmt "\n" }
-  | eof  { () }
-  | _    { pp_print_string fmt (lexeme lexbuf); raw fmt lexbuf }
-
-and start_of_line_raw fmt = parse
-  | space* as s
-      { indentation fmt (count_spaces s); raw fmt lexbuf }
-  | eof 
-      { () }
-
 {
   let ocaml_alltt fmt s =
     fprintf fmt "\\begin{alltt}";
@@ -177,17 +125,9 @@ and start_of_line_raw fmt = parse
     start_of_line fmt (from_string s);
     fprintf fmt "\\end{flushleft}\\egroup\\noindent\n"
 
-  let color_box_tt color fmt s =
-    fprintf fmt "\\colorbox{%s}{\\begin{minipage}{\\textwidth}\\tt\\parindent 0pt\n" color;
-    start_of_line_raw fmt (from_string s);
-    fprintf fmt "\\end{minipage}}\n"
-
   let () = 
     Pp.add_pp_environment "ocaml-alltt" ocaml_alltt;
     Pp.add_pp_environment "ocaml-tt" ocaml_tt;
-    Pp.add_pp_environment "ocaml-lightgreen-tt" (color_box_tt "lightgreen");
-    Pp.add_pp_environment "ocaml-lightblue-tt" (color_box_tt "lightblue");
-    Pp.add_pp_environment "ocaml-lightred-tt" (color_box_tt "lightred");
     Pp.add_pp_environment "ocaml-sf" ocaml_sf;
     Pp.add_pp_environment "ocaml" ocaml_sf
 
