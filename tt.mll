@@ -44,8 +44,8 @@ and start_of_line_raw fmt = parse
     fprintf fmt "\\end{minipage}}\n"
 
   let () = 
-    Pp.add_pp_environment "ocaml-lightgreen-tt" (color_box_tt "lightgreen");
-    Pp.add_pp_environment "ocaml-lightblue-tt" (color_box_tt "lightblue");
-    Pp.add_pp_environment "ocaml-lightred-tt" (color_box_tt "lightred");
+    Pp.add_pp_environment "lightgreen-tt" (color_box_tt "lightgreen");
+    Pp.add_pp_environment "lightblue-tt" (color_box_tt "lightblue");
+    Pp.add_pp_environment "lightred-tt" (color_box_tt "lightred");
 
 }
