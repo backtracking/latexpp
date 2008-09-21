@@ -15,14 +15,15 @@ rule raw fmt = parse
   | '\\' { pp_print_string fmt "\\ensuremath{\\backslash}"; raw fmt lexbuf }
   | "\\pause" | "\\tab"
          { pp_print_string fmt (lexeme lexbuf); raw fmt lexbuf }
-  | '#' { pp_print_string fmt "\\#{}";
-	  raw fmt lexbuf }
+  | '#' { pp_print_string fmt "\\#{}"; raw fmt lexbuf }
+  | '$' { pp_print_string fmt "\\${}"; raw fmt lexbuf }
   | ' '  { pp_print_string fmt "\\hspace*{1ex}"; raw fmt lexbuf }
   | " :"  { pp_print_string fmt "\\hspace*{0ex}:"; raw fmt lexbuf }
   | "::"  { pp_print_string fmt ":\\hspace{-1ex}:"; raw fmt lexbuf }
   | " ::" { pp_print_string fmt "\\hspace*{0ex}:\\hspace*{-1ex}:"; raw fmt lexbuf }
   | '_'  { pp_print_string fmt "\\_{}"; raw fmt lexbuf }
   | '%'  { pp_print_string fmt "\\%{}"; raw fmt lexbuf }
+  | '~'  { pp_print_string fmt "\\~{}"; raw fmt lexbuf }
   | ";;"  { pp_print_string fmt ";\\hspace*{-0.5ex};"; raw fmt lexbuf }
   | '&'  { pp_print_string fmt "\\&{}"; raw fmt lexbuf }
   | '%'  { pp_print_string fmt "\\%{}"; raw fmt lexbuf }

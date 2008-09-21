@@ -229,6 +229,6 @@ and start_of_line fmt = parse
 
   let () = Pp.add_pp_macro "c-tt" texttt
   let () = Pp.add_pp_macro "c-sf" textsf
-  let () = Pp.add_pp_macro "c" textsf
+  let () = Pp.add_pp_macro "c" texttt
 }
 
