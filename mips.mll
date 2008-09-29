@@ -49,9 +49,15 @@ rule pp fmt = parse
 	fprintf fmt "}~\\linebreak"; start_of_line fmt lexbuf;
 	pp fmt lexbuf 
       }
+  | ('.' ident) as s
+      { if color () then fprintf fmt "{\\color{violet}"
+	else fprintf fmt "\\textbf{";
+	print_ident fmt s;
+	fprintf fmt "}";
+	pp fmt lexbuf 
+      }
   | ident as s
-      { 
-	if is_keyword s then begin
+      { if is_keyword s then begin
 	  if color () then fprintf fmt "{\\color{blue}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
