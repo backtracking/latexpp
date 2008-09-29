@@ -11,9 +11,11 @@
     let h = Hashtbl.create 97 in 
     List.iter (fun s -> Hashtbl.add h s ()) 
       [ 
-	"addi"; "addiu"; "sw"; "lw"; "move"; "not"; "and"; "li";
-	"beqz"; "bnez"; "j"; "sub"; "sll"; "srl"; "jal"; "add"; "neg";
-	"syscall"; "la"; "jr";
+	"addi"; "addiu"; "sw"; "lw"; "move"; "not"; "and"; "andi"; "li";
+	"beq"; "beqz"; "bnez"; "j"; "sub"; "sll"; "sllv"; "srl"; 
+	"sra"; "srlv"; "srav"; "jal"; "add"; "neg";
+	"syscall"; "la"; "jr"; "abs"; "or"; "ori";
+	"rol"; "ror"; "slt"; "slti"; "sltu"; "sltiu"
       ]; 
     h
 
@@ -86,6 +88,7 @@ and one_line_comment fmt = parse
   | '}'  { fprintf fmt "\\}"; one_line_comment fmt lexbuf }
   | '$' { fprintf fmt "\\${}"; one_line_comment fmt lexbuf }
   | '#' { fprintf fmt "\\#{}"; one_line_comment fmt lexbuf }
+  | '^' { fprintf fmt "\\^{}"; one_line_comment fmt lexbuf }
   | '_'  { fprintf fmt "\\_{}"; one_line_comment fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; one_line_comment fmt lexbuf }
   | '~'  { fprintf fmt "\\~{}"; one_line_comment fmt lexbuf }
