@@ -1,1 +1,1 @@
-export MKSLICE="./latexpp.opt -w -c"
+export MKSLICE="./latexpp.opt -w"

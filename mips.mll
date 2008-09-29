@@ -11,9 +11,9 @@
     let h = Hashtbl.create 97 in 
     List.iter (fun s -> Hashtbl.add h s ()) 
       [ 
-	"addi"; "addiu"; "sw"; "lw"; "move"; "not"; "and"; "andi"; "li";
+	"addi"; "addiu"; "sw"; "lw"; "move"; "not"; "and"; "andi"; "li"; "lui";
 	"beq"; "beqz"; "bnez"; "j"; "sub"; "sll"; "sllv"; "srl"; 
-	"sra"; "srlv"; "srav"; "jal"; "add"; "neg";
+	"sra"; "srlv"; "srav"; "jal"; "jalr"; "add"; "neg";
 	"syscall"; "la"; "jr"; "abs"; "or"; "ori";
 	"rol"; "ror"; "slt"; "slti"; "sltu"; "sltiu"
       ]; 
