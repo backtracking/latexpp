@@ -45,8 +45,9 @@ rule pp fmt = parse
       { 
 	fprintf fmt "{"; 
 	if color () then fprintf fmt "\\color{red}";
-	pp_print_string fmt "\\#{}"; one_line_comment fmt lexbuf; 
-	fprintf fmt "}~\\linebreak"; start_of_line fmt lexbuf;
+	pp_print_string fmt "\\#{}"; 
+	one_line_comment fmt lexbuf;
+	start_of_line fmt lexbuf;
 	pp fmt lexbuf 
       }
   | ('.' ident) as s
@@ -78,7 +79,7 @@ rule pp fmt = parse
       { pp_print_char fmt c; pp fmt lexbuf }
 
 and one_line_comment fmt = parse
-  | "\n" { () }
+  | "\n" { fprintf fmt "}~\\linebreak" }
   | '\\' 
       { fprintf fmt "\\ensuremath{\\backslash}"; one_line_comment fmt lexbuf }
   | '{'  { fprintf fmt "\\{"; one_line_comment fmt lexbuf }
@@ -90,7 +91,8 @@ and one_line_comment fmt = parse
   | '~'  { fprintf fmt "\\~{}"; one_line_comment fmt lexbuf }
   | "&" { fprintf fmt "\\&{}"; one_line_comment fmt lexbuf }
   | " " { fprintf fmt "~"; one_line_comment fmt lexbuf }
-  | eof  { () }
+  | "\n" space* eof { fprintf fmt "}" }
+  | eof  { fprintf fmt "}" }
   | _ as c { pp_print_char fmt c; one_line_comment fmt lexbuf }
 
 and start_of_line fmt = parse
