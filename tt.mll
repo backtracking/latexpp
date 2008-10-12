@@ -26,6 +26,7 @@ rule raw fmt = parse
   | '~'  { pp_print_string fmt "\\~{}"; raw fmt lexbuf }
   | ";;"  { pp_print_string fmt ";\\hspace*{-0.5ex};"; raw fmt lexbuf }
   | '&'  { pp_print_string fmt "\\&{}"; raw fmt lexbuf }
+  | '^'  { pp_print_string fmt "\\^{}"; raw fmt lexbuf }
   | '%'  { pp_print_string fmt "\\%{}"; raw fmt lexbuf }
   | '\n' { pp_print_string fmt "\\\\\n"; raw fmt lexbuf }
   | "\n" space* eof { pp_print_string fmt "\n" }
