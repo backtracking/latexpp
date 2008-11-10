@@ -49,7 +49,7 @@ all: $(OCAMLBEST)
 ######################################
 
 CMO = version.cmo options.cmo util.cmo pp.cmo ocaml.cmo c.cmo why.cmo tt.cmo \
-      mips.cmo mlpost_pp.cmo metapost.cmo main.cmo
+      mips.cmo pascal.cmo mlpost_pp.cmo metapost.cmo main.cmo
 CMX = $(CMO:.cmo=.cmx)
 
 GENERATED = version.ml pp.ml ocaml.ml tt.ml why.ml c.ml
