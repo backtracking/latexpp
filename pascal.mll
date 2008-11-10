@@ -61,7 +61,6 @@ let space = [' ' '\t']
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* 
 
 rule pp fmt = parse
-  | '{'  { fprintf fmt "\\{"; pp fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; pp fmt lexbuf }
   | '#' { fprintf fmt "\\#{}"; pp fmt lexbuf }
   | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
@@ -96,20 +95,20 @@ rule pp fmt = parse
   | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
   | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
 *)
-  | "/*" 
+  | "(*" 
       { 
 	fprintf fmt "\\emph{"; 
 	if color () then fprintf fmt "\\color{red}";
-	pp_print_string fmt "/*"; comment fmt lexbuf; 
+	pp_print_string fmt "(*"; comment fmt lexbuf; 
 	fprintf fmt "}"; 
 	pp fmt lexbuf 
       }
-  | "//" 
+  | "{" 
       { 
 	fprintf fmt "\\emph{"; 
 	if color () then fprintf fmt "\\color{red}";
-	pp_print_string fmt "//"; one_line_comment fmt lexbuf; 
-	fprintf fmt "}\\linebreak"; start_of_line fmt lexbuf;
+	pp_print_string fmt "\\{"; comment fmt lexbuf; 
+	fprintf fmt "}"; 
 	pp fmt lexbuf 
       }
   | ident as s
@@ -139,11 +138,10 @@ and comment fmt = parse
   | "\n" (space* as s)
       { fprintf fmt "~\\linebreak"; indentation fmt (count_spaces s);
 	comment fmt lexbuf }
-  | "*/" as s
-      { pp_print_string fmt s }
+  | "*)" { pp_print_string fmt "*)" }
+  | '}'  { fprintf fmt "\\}" }
   | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; comment fmt lexbuf }
   | '{'  { fprintf fmt "\\{"; comment fmt lexbuf }
-  | '}'  { fprintf fmt "\\}"; comment fmt lexbuf }
   | '#' { fprintf fmt "\\#{}"; comment fmt lexbuf }
   | '_'  { fprintf fmt "\\_{}"; comment fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; comment fmt lexbuf }
