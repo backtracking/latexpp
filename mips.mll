@@ -15,7 +15,7 @@
 	"beq"; "beqz"; "bnez"; "j"; "sub"; "sll"; "sllv"; "srl"; 
 	"sra"; "srlv"; "srav"; "jal"; "jalr"; "add"; "neg";
 	"syscall"; "la"; "jr"; "abs"; "or"; "ori";
-	"rol"; "ror"; "slt"; "slti"; "sltu"; "sltiu"
+	"rol"; "ror"; "seq"; "slt"; "slti"; "sltu"; "sltiu"
       ]; 
     h
 
