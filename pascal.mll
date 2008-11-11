@@ -21,7 +21,7 @@
     let h = Hashtbl.create 97 in 
     List.iter (fun s -> Hashtbl.add h s ()) 
       [ 
-	"var"; "integer";
+	"var"; "integer"; "array"; "of";
       ]; 
     h
 

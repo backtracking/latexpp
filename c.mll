@@ -21,7 +21,7 @@
     let h = Hashtbl.create 97 in 
     List.iter (fun s -> Hashtbl.add h s ()) 
       [ 
-	"int"; "void";
+	"int"; "void"; "struct";
       ]; 
     h
 
@@ -205,7 +205,12 @@ and start_of_line fmt = parse
     let lb = from_string s in
     tt := true; start_of_line fmt lb; pp fmt lb; tt := false;
     fprintf fmt "\\end{flushleft}%%\n"
- 
+
+  let lightblue_c_tt fmt s =
+    fprintf fmt "\\colorbox{lightblue}{\\begin{minipage}{1.0\\linewidth}\n";
+    c_tt fmt s;
+    fprintf fmt "\\end{minipage}}%%\n"
+			  
   let c_sf fmt s =
     fprintf fmt "\\bgroup\\sf\\begin{flushleft}\n";
     let lb = from_string s in
@@ -216,6 +221,7 @@ and start_of_line fmt = parse
   let () = Pp.add_pp_environment "c-tt" c_tt
   let () = Pp.add_pp_environment "c-sf" c_sf
   let () = Pp.add_pp_environment "c" c_tt
+  let () = Pp.add_pp_environment "lightblue-c" lightblue_c_tt
 
   let texttt fmt s =
     fprintf fmt "\\texttt{";
