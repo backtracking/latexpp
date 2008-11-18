@@ -14,7 +14,7 @@
 	"addi"; "addiu"; "sw"; "lw"; "move"; "not"; "and"; "andi"; "li"; "lui";
 	"beq"; "beqz"; "bnez"; "j"; "sub"; "sll"; "sllv"; "srl"; 
 	"sra"; "srlv"; "srav"; "jal"; "jalr"; "add"; "neg"; "mul"; 
-	"syscall"; "la"; "jr"; "abs"; "or"; "ori"; "ble";
+	"syscall"; "la"; "jr"; "abs"; "or"; "ori"; "ble"; "b";
 	"rol"; "ror"; "seq"; "slt"; "slti"; "sltu"; "sltiu"
       ]; 
     h
