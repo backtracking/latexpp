@@ -1,5 +1,5 @@
 
-(* C preprocessor *)
+(* Pascal preprocessor *)
 
 {
   open Lexing 
