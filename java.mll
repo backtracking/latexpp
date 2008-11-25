@@ -13,7 +13,7 @@
       [ 
 	"class"; "extends"; "this"; "super";
 	"public"; "static"; "final"; "abstract"; "private";
-	"throw"; "new"; "for"; "while"; "return";
+	"throw"; "new"; "for"; "while"; "return"; "instanceof"; "if"; "else";
       ]; 
     h
 
@@ -86,7 +86,7 @@ rule pp fmt = parse
       { ident fmt s; pp fmt lexbuf }
   | (ident as id1) (space+ as s) (ident as id2)
       { begin
-	  if is_keyword id1 || not (color ()) then begin
+	  if is_keyword id1 || is_keyword id2 || not (color ()) then begin
 	    ident fmt id1; pp_print_string fmt s; ident fmt id2
 	  end else begin
 	    print_green_ident fmt id1; pp_print_string fmt s; ident fmt id2;
