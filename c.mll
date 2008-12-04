@@ -11,7 +11,7 @@
     List.iter (fun s -> Hashtbl.add h s ()) 
       [ 
 	"if"; "while"; "for"; "register"; "else";
-	"break"; "return";
+	"break"; "return"; "goto";
       ]; 
     h
 
