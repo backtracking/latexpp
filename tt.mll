@@ -8,19 +8,17 @@
 }
 
 let space = [' ' '\t']
+let latex_symbol = '\\' | '#' | '$'
 
 rule raw fmt = parse
   | '{'  { pp_print_string fmt "\\{"; raw fmt lexbuf }
   | '}'  { pp_print_string fmt "\\}"; raw fmt lexbuf }
-  | '\\' { pp_print_string fmt "\\ensuremath{\\backslash}"; raw fmt lexbuf }
+  | latex_symbol as c 
+      { fprintf fmt "\\symbol{%d}" (Char.code c); raw fmt lexbuf }
   | "\\pause" | "\\tab"
          { pp_print_string fmt (lexeme lexbuf); raw fmt lexbuf }
-  | '#' { pp_print_string fmt "\\#{}"; raw fmt lexbuf }
-  | '$' { pp_print_string fmt "\\${}"; raw fmt lexbuf }
-  | ' '  { pp_print_string fmt "\\hspace*{1ex}"; raw fmt lexbuf }
-  | " :"  { pp_print_string fmt "\\hspace*{0ex}:"; raw fmt lexbuf }
-  | "::"  { pp_print_string fmt ":\\hspace{-1ex}:"; raw fmt lexbuf }
-  | " ::" { pp_print_string fmt "\\hspace*{0ex}:\\hspace*{-1ex}:"; raw fmt lexbuf }
+  | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; raw fmt lexbuf }
+  | ":"  { pp_print_string fmt "\\symbol{58}"; raw fmt lexbuf }
   | '_'  { pp_print_string fmt "\\_{}"; raw fmt lexbuf }
   | '%'  { pp_print_string fmt "\\%{}"; raw fmt lexbuf }
   | '~'  { pp_print_string fmt "\\~{}"; raw fmt lexbuf }
@@ -33,21 +31,12 @@ rule raw fmt = parse
   | eof  { () }
   | _    { pp_print_string fmt (lexeme lexbuf); raw fmt lexbuf }
 
-and start_of_line_raw fmt = parse
-  | space* as s
-      { indentation fmt (count_spaces s); raw fmt lexbuf }
-  | eof 
-      { () }
-
 {
-  let color_box_tt color fmt s =
-    fprintf fmt "\\colorbox{%s}{\\begin{minipage}{\\textwidth}\\tt\\parindent 0pt\n" color;
-    start_of_line_raw fmt (from_string s);
-    fprintf fmt "\\end{minipage}}\n"
+  let raw fmt s = raw fmt (from_string s)
 
   let () = 
-    Pp.add_pp_environment "lightgreen-tt" (color_box_tt "lightgreen");
-    Pp.add_pp_environment "lightblue-tt" (color_box_tt "lightblue");
-    Pp.add_pp_environment "lightred-tt" (color_box_tt "lightred");
+    Pp.add_pp_environment "lightgreen-tt" (lightgreen_box_tt raw);
+    Pp.add_pp_environment "lightblue-tt" (lightblue_box_tt raw);
+    Pp.add_pp_environment "lightred-tt" (lightred_box_tt raw)
 
 }

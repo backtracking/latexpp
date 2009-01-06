@@ -1,12 +1,34 @@
 \documentclass[compress]{beamer}
-\definecolor{lightgreen}{rgb}{0.6,1,0.6}
-\definecolor{lightblue}{rgb}{0.8,0.8,1}
-\definecolor{lightred}{rgb}{1,0.8,0.8}
+\usepackage[latin1]{inputenc}
 
 \begin{document}
 
-\begin{frame}\frametitle{Test 1}
+\begin{frame}\frametitle{tt}
+environment \texttt{lightblue-tt}
 
+\bigskip
+
+test alignement
+\begin{lightblue-tt}
+  type          t = int -> int * int           a
+  and           u = int                       aa
+  toto :  titi
+  toto::  tutu
+  toto :: tutu
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+\end{lightblue-tt}
+
+\bigskip
+
+caractères spéciaux
+\begin{lightblue-tt}
+AAAAAAAAAAAAAAAAAAAA
+  ### $$$ \\\ :::
+\end{lightblue-tt}%$
+
+\end{frame}
+
+\begin{frame}\frametitle{}
 Environment \texttt{ocaml-sf}
 \begin{ocaml}
   type t = int -> int
@@ -14,12 +36,9 @@ Environment \texttt{ocaml-sf}
 and environment \texttt{ocaml-tt}
 \begin{ocaml-tt}
   type t = int -> int
+  type 'a u = A of 'a * 'a
 \end{ocaml-tt}
-and environment \texttt{lightblue-tt}
-\begin{lightblue-tt}
-  type t = int -> int * int
-\end{lightblue-tt}
-and that's it.
+
 \end{frame}
 
 \begin{frame}\frametitle{Test 2}

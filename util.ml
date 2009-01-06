@@ -26,3 +26,17 @@ let print_ident fmt =
   in
   String.iter char
 
+let colorname_box_tt color pp fmt s =
+  fprintf fmt "\\colorbox{%s}{\\begin{minipage}{\\textwidth}\\tt\\parindent 0pt\n" color;
+  pp fmt s;
+  fprintf fmt "\\end{minipage}}\n"
+
+let rgbcolor_box_tt r g b pp fmt s =
+  fprintf fmt "{\\definecolor{tmpcolor}{rgb}{%.2f,%.2f,%.2f}\\colorbox{tmpcolor}{\\begin{minipage}{\\textwidth}\\tt\\parindent 0pt\n" r g b;
+  pp fmt s;
+  fprintf fmt "\\end{minipage}}}\n"
+
+let lightgreen_box_tt pp = rgbcolor_box_tt 0.6 1.0 0.6 pp
+let lightblue_box_tt pp = rgbcolor_box_tt 0.8 0.8 1.0 pp
+let lightred_box_tt pp = rgbcolor_box_tt 1.0 0.8 0.8 pp
+
