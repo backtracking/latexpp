@@ -1,6 +1,6 @@
 \documentclass[compress]{beamer}
 \usepackage[latin1]{inputenc}
-
+\let\elph\alert
 \begin{document}
 
 \begin{frame}\frametitle{tt}
@@ -10,6 +10,7 @@ environment \texttt{lightblue-tt}
 
 test alignement
 \begin{lightblue-tt}
+module M = struct
   type          t = int -> int * int           a
   and           u = int                       aa
   toto :  titi
@@ -22,13 +23,12 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
 caractères spéciaux
 \begin{lightblue-tt}
-AAAAAAAAAAAAAAAAAAAA
-  ### $$$ \\\ :::
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+### $$$ \\\ ::: ___ %%% ~~~ ;;; &&& ^^^ {{{ }}}
 \end{lightblue-tt}%$
-
 \end{frame}
 
-\begin{frame}\frametitle{}
+\begin{frame}\frametitle{Ocaml}
 Environment \texttt{ocaml-sf}
 \begin{ocaml}
   type t = int -> int
@@ -36,15 +36,30 @@ Environment \texttt{ocaml-sf}
 and environment \texttt{ocaml-tt}
 \begin{ocaml-tt}
   type t = int -> int
-  type 'a u = A of 'a * 'a
+  type 'a u = A of 'a * 'a 
 \end{ocaml-tt}
 
+caractères spéciaux
+\begin{ocaml-sf}
+  type t = $ ^ : # % { } 
+  (* $ ^ : # % { } *) 
+\end{ocaml-sf}
+
+caractères spéciaux
+\begin{ocaml-tt}
+  type t = $ ^ : # % { } 
+  aaaaaaaaaaaaaaaaaaaaaaaaaa
+  (* $ ^ : # %   }}}}}}}}}}} *) 
+\end{ocaml-tt}
 \end{frame}
 
-\begin{frame}\frametitle{Test 2}
+\begin{frame}\frametitle{Mips}
+avant
 \begin{mips}
     move $a0, 10  
+    add  $a0, $a1
 \end{mips}
+après
 \end{frame}
 
 \end{document}

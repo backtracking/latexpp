@@ -1,1 +1,1 @@
-export MKSLICE="./latexpp.opt -w"
+export MKSLICE="./latexpp.opt -w -g color yes"

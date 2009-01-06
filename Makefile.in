@@ -52,7 +52,8 @@ CMO = version.cmo options.cmo util.cmo pp.cmo ocaml.cmo c.cmo why.cmo tt.cmo \
       mips.cmo pascal.cmo java.cmo mlpost_pp.cmo metapost.cmo main.cmo
 CMX = $(CMO:.cmo=.cmx)
 
-GENERATED = version.ml pp.ml ocaml.ml tt.ml why.ml c.ml
+GENERATED = version.ml pp.ml ocaml.ml tt.ml why.ml c.ml mips.ml java.ml \
+            pascal.ml
 
 byte: $(NAME).byte
 opt: $(NAME).opt

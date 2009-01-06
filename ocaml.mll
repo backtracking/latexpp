@@ -7,49 +7,39 @@
   open Options
   open Util
 
-  let ocaml_keywords = 
-    let h = Hashtbl.create 97 in 
-    List.iter (fun s -> Hashtbl.add h s ()) 
-      [ 
-	"and"; "as"; "assert"; "asr"; "begin";
-	"class"; "constraint"; "do"; "done"; "downto"; "else"; "end";
-	"exception"; "external"; "false"; "for"; "fun"; "function";
-	"functor"; "if"; "in"; "include"; "inherit"; "initializer";
-	"land"; "lazy"; "let"; "lor"; "lsl"; "lsr"; "lxor"; "match";
-	"method"; "mod"; "module"; "mutable"; "new"; "object"; "of";
-	"open"; "or"; "private"; "rec"; "sig"; "struct"; "then"; "to";
-	"true"; "try"; "type"; "val"; "virtual"; "when"; "while"; "with";
-      ]; 
-    h
-
-  let is_keyword = Hashtbl.mem ocaml_keywords  
+  let is_keyword = make_table
+    [ "and"; "as"; "assert"; "asr"; "begin";
+      "class"; "constraint"; "do"; "done"; "downto"; "else"; "end";
+      "exception"; "external"; "false"; "for"; "fun"; "function";
+      "functor"; "if"; "in"; "include"; "inherit"; "initializer";
+      "land"; "lazy"; "let"; "lor"; "lsl"; "lsr"; "lxor"; "match";
+      "method"; "mod"; "module"; "mutable"; "new"; "object"; "of";
+      "open"; "or"; "private"; "rec"; "sig"; "struct"; "then"; "to";
+      "true"; "try"; "type"; "val"; "virtual"; "when"; "while"; "with";
+    ] 
 
   let color () = is_set "color"
-
 }
 
 let space = [' ' '\t']
+let latex_symbol = 
+  '\\' | '#' | '$' | ':' | '_' | '%' | '~' | ';' | '&' | '^' 
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* 
 
 rule pp fmt = parse
+  | latex_symbol as c 
+         { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
+  | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; pp fmt lexbuf }
   | '{'  { fprintf fmt "\\{"; pp fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; pp fmt lexbuf }
-  | '#' { fprintf fmt "\\#{}"; pp fmt lexbuf }
-  | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
-  | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
-  | ':'  { fprintf fmt "\\ensuremath{\\colon}"; pp fmt lexbuf }
-  | "::"  { fprintf fmt "\\ensuremath{\\colon\\!\\!\\colon\\!}"; 
-	    pp fmt lexbuf }
-  | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
-  | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
   | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
-  | ">" { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
-  | "<" { fprintf fmt "\\ensuremath{<}"; pp fmt lexbuf }
+  | ">"  { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
+  | "<"  { fprintf fmt "\\ensuremath{<}"; pp fmt lexbuf }
   | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
   | "<=" { fprintf fmt "\\ensuremath{\\le}"; pp fmt lexbuf }
   | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
-  | "|" { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
+  | "|"  { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
   | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
   | "==" { fprintf fmt "\\ensuremath{\\equiv}"; pp fmt lexbuf }
   | ":=" { fprintf fmt "\\ensuremath{:=}"; pp fmt lexbuf }
@@ -60,10 +50,10 @@ rule pp fmt = parse
   | "*"  { fprintf fmt "\\ensuremath{\\times}"; pp fmt lexbuf }
   | "(*" 
       { 
-	fprintf fmt "\\emph{"; 
+	(* fprintf fmt "\\emph{";  *)
 	if color () then fprintf fmt "\\color{red}";
 	pp_print_string fmt "(*"; comment fmt lexbuf; 
-	fprintf fmt "}"; 
+	(* fprintf fmt "}";  *)
 	pp fmt lexbuf 
       }
   | ident as s
@@ -91,13 +81,16 @@ and comment fmt = parse
       { pp_print_string fmt s; comment fmt lexbuf; comment fmt lexbuf }
   | "*)" as s
       { pp_print_string fmt s }
+  | latex_symbol as c 
+      { fprintf fmt "\\symbol{%d}" (Char.code c); comment fmt lexbuf }
+  | ' '  
+      { pp_print_string fmt "\\hspace*{1.22ex}"; comment fmt lexbuf }
   | '{'  { fprintf fmt "\\{"; comment fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; comment fmt lexbuf }
-  | '#' { fprintf fmt "\\#{}"; comment fmt lexbuf }
-  | '_'  { fprintf fmt "\\_{}"; comment fmt lexbuf }
-  | '%'  { fprintf fmt "\\%%{}"; comment fmt lexbuf }
-  | ">" { fprintf fmt "\\ensuremath{>}"; comment fmt lexbuf }
-  | "<" { fprintf fmt "\\ensuremath{<}"; comment fmt lexbuf }
+  | ">" 
+      { fprintf fmt "\\ensuremath{>}"; comment fmt lexbuf }
+  | "<" 
+      { fprintf fmt "\\ensuremath{<}"; comment fmt lexbuf }
   | eof  
       { () }
   | _ as c  

@@ -40,3 +40,8 @@ let lightgreen_box_tt pp = rgbcolor_box_tt 0.6 1.0 0.6 pp
 let lightblue_box_tt pp = rgbcolor_box_tt 0.8 0.8 1.0 pp
 let lightred_box_tt pp = rgbcolor_box_tt 1.0 0.8 0.8 pp
 
+
+let make_table l =
+  let h = Hashtbl.create 97 in 
+  List.iter (fun s -> Hashtbl.add h s ()) l;
+  Hashtbl.mem h

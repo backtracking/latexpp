@@ -105,17 +105,15 @@ and start_of_line fmt = parse
       { () }
 
 {
+  let mips fmt s = 
+    let lb = from_string s in start_of_line fmt lb; pp fmt lb
+  
   let mips_tt fmt s =
     fprintf fmt "\\begin{flushleft}\\ttfamily\\parindent 0pt\n";
-    let lb = from_string s in
-    start_of_line fmt lb; pp fmt lb;
+    mips fmt s;
     fprintf fmt "\\end{flushleft}%%\n"
 
-  let mips_lightblue_tt fmt s =
-    fprintf fmt "\\colorbox{lightblue}{\\begin{minipage}{\\textwidth}\\tt\\parindent 0pt\n";
-    let lb = from_string s in
-    start_of_line fmt lb; pp fmt lb;
-    fprintf fmt "\\end{minipage}}\n"
+  let mips_lightblue_tt = lightblue_box_tt mips
  
   let () = Pp.add_pp_environment "mips-lightblue-tt" mips_lightblue_tt
   let () = Pp.add_pp_environment "mips-tt" mips_tt
