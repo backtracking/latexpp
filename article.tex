@@ -1,8 +1,8 @@
 \documentclass[a4paper,12pt]{article}
-\usepackage{graphicx,alltt}
+\usepackage{graphicx,alltt,fullpage}
 \usepackage[french]{babel}
 \usepackage[latin1]{inputenc}
-%\usepackage[T1]{fontenc}
+\usepackage[T1]{fontenc}
 \begin{document}
 
 \subsection{tt}
@@ -29,6 +29,27 @@ caractères spéciaux
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ### $$$ \\\ ::: ___ %%% ~~~ ;;; &&& ^^^ {{{ }}}
 \end{lightblue-tt}%$
+
+\subsection{ocaml}
+
+Environment \texttt{ocaml}
+\begin{ocaml}
+  type t = int -> int (* def of type t { ... } *)
+  let v = { x = 1 ; y = 2 } and w = ...
+  let rec f x = if x <= 1 then 1 else x * f (x-1)
+\end{ocaml}
+and environment \texttt{ocaml-tt}
+\begin{ocaml-tt}
+  type t = int -> int
+  type 'a u = A of 'a * 'a 
+\end{ocaml-tt}
+and environment \texttt{ocaml-sf}
+\begin{ocaml-sf}
+  type t = int -> int (* def of type t *)
+  let v = { x = 1; y = 2 } and w = ...
+  let rec f x = if x <= 1 then 1 else x * f (x-1)
+\end{ocaml-sf}
+
 
 \subsection{mips}
 
