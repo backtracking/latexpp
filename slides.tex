@@ -1,6 +1,6 @@
 \documentclass[compress]{beamer}
 \usepackage[latin1]{inputenc}
-\let\elph\alert
+
 \begin{document}
 
 \begin{frame}\frametitle{tt}
@@ -30,28 +30,23 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 \end{frame}
 
 \begin{frame}\frametitle{ocaml}
-Environment \texttt{ocaml-sf}
+Environment \texttt{ocaml}
 \begin{ocaml}
-  type t = int -> int
+  type t = int -> int (* def of type t { ... } *)
+  let v = { x = 1 ; y = 2 } and w = ...
+  let rec f x = if x <= 1 then 1 else x * f (x-1)
 \end{ocaml}
 and environment \texttt{ocaml-tt}
 \begin{ocaml-tt}
   type t = int -> int
   type 'a u = A of 'a * 'a 
 \end{ocaml-tt}
-
-caractères spéciaux
+and environment \texttt{ocaml-sf}
 \begin{ocaml-sf}
-  type t = $ ^ : # % { } 
-  (* $ ^ : # % { } *) 
+  type t = int -> int (* def of type t *)
+  let v = { x = 1 ; y = 2 } and w = ...
+  let rec f x = if x <= 1 then 1 else x * f (x-1)
 \end{ocaml-sf}
-
-caractères spéciaux
-\begin{ocaml-tt}
-  type t = $ ^ : # % { } 
-  aaaaaaaaaaaaaaaaaaaaaaaaaa
-  (* $ ^ : # %   }}}}}}}}}}} *) 
-\end{ocaml-tt}
 \end{frame}
 
 \begin{frame}\frametitle{mips}

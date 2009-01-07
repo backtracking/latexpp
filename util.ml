@@ -55,6 +55,12 @@ let noindent_tt pp =
     pp fmt s;
     fprintf fmt "}\n")
 
+let noindent_sf pp = 
+  with_vspacing (fun fmt s ->
+    fprintf fmt "\n\n\\noindent{\\sf\\parindent 0pt\n";
+    pp fmt s;
+    fprintf fmt "}\n")
+
 let make_table l =
   let h = Hashtbl.create 97 in 
   List.iter (fun s -> Hashtbl.add h s ()) l;

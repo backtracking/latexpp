@@ -19,6 +19,7 @@
     ] 
 
   let color () = is_set "color"
+  let is_tt = ref true
 }
 
 let space = [' ' '\t']
@@ -30,8 +31,10 @@ rule pp fmt = parse
   | latex_symbol as c 
          { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
   | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; pp fmt lexbuf }
-  | '{'  { fprintf fmt "\\{"; pp fmt lexbuf }
-  | '}'  { fprintf fmt "\\}"; pp fmt lexbuf }
+  | '{'  { if !is_tt then fprintf fmt "\\symbol{123}" else fprintf fmt "\\{"; 
+	   pp fmt lexbuf }
+  | '}'  { if !is_tt then fprintf fmt "\\symbol{125}" else fprintf fmt "\\}"; 
+	   pp fmt lexbuf }
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
   | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
   | ">"  { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
@@ -50,10 +53,10 @@ rule pp fmt = parse
   | "*"  { fprintf fmt "\\ensuremath{\\times}"; pp fmt lexbuf }
   | "(*" 
       { 
-	(* fprintf fmt "\\emph{";  *)
+	fprintf fmt "{";
 	if color () then fprintf fmt "\\color{red}";
 	pp_print_string fmt "(*"; comment fmt lexbuf; 
-	(* fprintf fmt "}";  *)
+	fprintf fmt "}";
 	pp fmt lexbuf 
       }
   | ident as s
@@ -85,8 +88,10 @@ and comment fmt = parse
       { fprintf fmt "\\symbol{%d}" (Char.code c); comment fmt lexbuf }
   | ' '  
       { pp_print_string fmt "\\hspace*{1.22ex}"; comment fmt lexbuf }
-  | '{'  { fprintf fmt "\\{"; comment fmt lexbuf }
-  | '}'  { fprintf fmt "\\}"; comment fmt lexbuf }
+  | '{'  { if !is_tt then fprintf fmt "\\symbol{123}" else fprintf fmt "\\{"; 
+	   comment fmt lexbuf }
+  | '}'  { if !is_tt then fprintf fmt "\\symbol{125}" else fprintf fmt "\\}"; 
+	   comment fmt lexbuf }
   | ">" 
       { fprintf fmt "\\ensuremath{>}"; comment fmt lexbuf }
   | "<" 
@@ -103,26 +108,19 @@ and start_of_line fmt = parse
       { () }
 
 {
-  let ocaml_alltt fmt s =
-    fprintf fmt "\\begin{alltt}";
-    pp fmt (from_string s);
-    fprintf fmt "\\end{alltt}%%\n"
- 
-  let ocaml_sf fmt s =
-    fprintf fmt "\\bgroup\\sf\\begin{flushleft}\n";
-    start_of_line fmt (from_string s);
-    fprintf fmt "\\end{flushleft}\\egroup\\noindent\n"
- 
-  let ocaml_tt fmt s =
-    fprintf fmt "\\bgroup\\tt\\begin{flushleft}\n";
-    start_of_line fmt (from_string s);
-    fprintf fmt "\\end{flushleft}\\egroup\\noindent\n"
+  let ocaml fmt s = 
+    let lb = from_string s in start_of_line fmt lb
 
-  let () = 
-    Pp.add_pp_environment "ocaml-alltt" ocaml_alltt;
-    Pp.add_pp_environment "ocaml-tt" ocaml_tt;
-    Pp.add_pp_environment "ocaml-sf" ocaml_sf;
-    Pp.add_pp_environment "ocaml" ocaml_sf
+  let ocaml_tt = noindent_tt ocaml
+  let () = Pp.add_pp_environment "ocaml-tt" ocaml_tt
+
+  let ocaml_lightblue_tt = lightblue_box_tt ocaml
+  let () = Pp.add_pp_environment "ocaml-lightblue-tt" ocaml_lightblue_tt
+  let () = Pp.add_pp_environment "ocaml" ocaml_lightblue_tt
+
+  let ocaml_sf = 
+    noindent_sf (fun fmt s -> is_tt := false; ocaml fmt s; is_tt := true)
+  let () = Pp.add_pp_environment "ocaml-sf" ocaml_sf
 
   let texttt fmt s =
     fprintf fmt "\\texttt{";
