@@ -4,11 +4,14 @@
 \begin{document}
 
 \begin{frame}\frametitle{tt}
+
+environnement \texttt{tt} :
+\begin{tt}
+#tagada         #
+#une autre ligne#
+\end{tt}
+
 environment \texttt{lightblue-tt}
-
-\bigskip
-
-test alignement
 \begin{lightblue-tt}
 module M = struct
   type          t = int -> int * int           a
@@ -19,8 +22,6 @@ module M = struct
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 \end{lightblue-tt}
 
-\bigskip
-
 caractères spéciaux
 \begin{lightblue-tt}
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -28,7 +29,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 \end{lightblue-tt}%$
 \end{frame}
 
-\begin{frame}\frametitle{Ocaml}
+\begin{frame}\frametitle{ocaml}
 Environment \texttt{ocaml-sf}
 \begin{ocaml}
   type t = int -> int
@@ -53,13 +54,19 @@ caractères spéciaux
 \end{ocaml-tt}
 \end{frame}
 
-\begin{frame}\frametitle{Mips}
+\begin{frame}\frametitle{mips}
 avant
 \begin{mips}
     move $a0, 10  
     add  $a0, $a1
 \end{mips}
 après
+\begin{mips}
+    .text
+L:  addi $sp, $sp, -4      # et un commentaire
+    li   $a0, 42           # et un autre { et } 
+    .data
+\end{mips}
 \end{frame}
 
 \end{document}

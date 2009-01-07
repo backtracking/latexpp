@@ -7,22 +7,16 @@
   open Options
   open Util
 
-  let mips_keywords = 
-    let h = Hashtbl.create 97 in 
-    List.iter (fun s -> Hashtbl.add h s ()) 
-      [ 
-	"addi"; "addiu"; "sw"; "lw"; "move"; "not"; "and"; "andi"; "li"; "lui";
-	"beq"; "beqz"; "bnez"; "j"; "sub"; "sll"; "sllv"; "srl"; 
-	"sra"; "srlv"; "srav"; "jal"; "jalr"; "add"; "neg"; "mul"; 
-	"syscall"; "la"; "jr"; "abs"; "or"; "ori"; "ble"; "bge"; "b";
-	"rol"; "ror"; "seq"; "slt"; "slti"; "sltu"; "sltiu"
-      ]; 
-    h
-
-  let is_keyword = Hashtbl.mem mips_keywords  
+  let is_keyword = make_table
+    [ 
+      "addi"; "addiu"; "sw"; "lw"; "move"; "not"; "and"; "andi"; "li"; "lui";
+      "beq"; "beqz"; "bnez"; "j"; "sub"; "sll"; "sllv"; "srl"; 
+      "sra"; "srlv"; "srav"; "jal"; "jalr"; "add"; "neg"; "mul"; 
+      "syscall"; "la"; "jr"; "abs"; "or"; "ori"; "ble"; "bge"; "b";
+      "rol"; "ror"; "seq"; "slt"; "slti"; "sltu"; "sltiu"
+    ]
 
   let color () = is_set "color"
-
 }
 
 let space = [' ' '\t']
@@ -35,7 +29,7 @@ rule pp fmt = parse
   | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
   | ident as s ':' 
       { fprintf fmt "{\\color{red}"; print_ident fmt s;
-	fprintf fmt "\\ensuremath{:\\,}}"; 
+	fprintf fmt "\\symbol{58}}"; 
 	pp fmt lexbuf }
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
   | '$'  { fprintf fmt "\\${}"; pp fmt lexbuf }

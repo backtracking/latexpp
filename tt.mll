@@ -27,6 +27,7 @@ rule raw fmt = parse
   let raw fmt s = raw fmt (from_string s)
 
   let () = 
+    Pp.add_pp_environment "tt" (noindent_tt raw);
     Pp.add_pp_environment "lightgreen-tt" (lightgreen_box_tt raw);
     Pp.add_pp_environment "lightblue-tt" (lightblue_box_tt raw);
     Pp.add_pp_environment "lightred-tt" (lightred_box_tt raw)

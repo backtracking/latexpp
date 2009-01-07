@@ -53,9 +53,12 @@ let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9' '-']*
 rule pp = parse
   | "%latexpp" space+ "-g" space+ (ident as o) space+ (ident as v) space* '\n'
       { 
-	Options.add o v;
-	newline lexbuf;
-	pp lexbuf
+	Options.add o v; newline lexbuf; pp lexbuf
+      }
+  | "%latexpp" space+ "-g" space+ (ident as o) space+ 
+    '"' ([^ '"' '\n']* as v) '"' space* '\n'
+      { 
+	Options.add o v; newline lexbuf; pp lexbuf
       }
   | "%latexpp" space+ ("-e" | "-m" as o) 
     space+ (ident as id1) space+ (ident as id2) space* '\n'
@@ -168,9 +171,9 @@ and options l = parse
       { error l "syntax error in options" }
 
 and value l o = parse
-  | [^ ']' ' ' '\r' '\t' '\n']+ as v
-      { v }
   | '"' ([^ '"']* as v) '"'
+      { v }
+  | [^ ']' ' ' '\r' '\t' '\n']+ as v
       { v }
   | eof
       { error l "unterminated options" }

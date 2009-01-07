@@ -7,6 +7,9 @@ predefined environments:
 - copy: simply copies its argument
 - ignore: /dev/null
 
+- tt
+- lightblue-tt, lightgreen-tt, lightred-tt
+
 - ocaml-tt
 - ocaml-sf
 - ocaml (mapped to ocaml-sf)
@@ -14,3 +17,7 @@ predefined environments:
 predefined macros:
 - copy: simply copies its argument
 - ignore: /dev/null
+
+predefined options:
+- color=yes
+- vspacing=\medskip

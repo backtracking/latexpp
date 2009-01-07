@@ -8,6 +8,8 @@ let opt = Hashtbl.create 97
  
 let add o v = Hashtbl.add opt o v
 
+let remove = Hashtbl.remove opt
+
 let find o = try Some (Hashtbl.find opt o) with Not_found -> None
 
 let is_set o = match find o with
@@ -21,6 +23,9 @@ let with_options ol f x =
     let y = f x in unroll (); y
   with e ->
     unroll (); raise e
+
+let () = add "vspacing" "\\medskip"
+let () = add "color" "yes"
 
 (* command line options *)
 
@@ -75,6 +80,12 @@ let spec =
     "-g", Tuple (let s1 = ref "" in
 		 [Set_string s1; String (fun s2 -> add !s1 s2)]),
     "<o> <v> set global option <o> to value <v>";
+    "-set", String (fun o -> add o "yes"),
+    "<o> sets global option <o> to value `yes'";
+    "-unset", String (fun o -> add o "no"),
+    "<o> sets global option <o> to value `no'";
+    "-clear", String remove,
+    "<o> removes any value for global option <o>";
   ]
 
 let usage_msg = "latexpp [options] [file]"
