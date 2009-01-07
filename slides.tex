@@ -62,11 +62,38 @@ avant
 \end{mips}
 après
 \begin{mips}
-    .text
-L:  addi $sp, $sp, -4      # et un commentaire
-    li   $a0, 42           # et un autre { et } 
-    .data
+      .text
+  L:  addi $sp, -4      # et un commentaire\
+      li   $a0, 42      # et un autre { et } 
+      .data
+#######################
 \end{mips}
+
+avant
+\begin{mips-tt}[vspacing=""]
+  addi $sp, 4
+\end{mips-tt}
+après
+\end{frame}
+
+\begin{frame}\frametitle{pascal}
+avant
+\begin{pascal-lightblue-tt}
+program fib;
+var
+    x : integer;
+begin
+    x := 0;
+end. (* et voilà $ & # *)
+\end{pascal-lightblue-tt}
+après
+\begin{pascal-tt}
+procedure f(var x : integer);
+begin
+  x := 0;
+end;
+\end{pascal-tt}
+et encore après
 \end{frame}
 
 \end{document}

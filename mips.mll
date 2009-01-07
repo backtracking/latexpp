@@ -21,31 +21,26 @@
 
 let space = [' ' '\t']
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* 
+let latex_symbol = 
+  '\\' | '#' | '$' | ':' | '_' | '%' | '~' | ';' | '&' | '^' | '{' | '}'
 
 rule pp fmt = parse
-  | '{'  { fprintf fmt "\\{"; pp fmt lexbuf }
-  | '}'  { fprintf fmt "\\}"; pp fmt lexbuf }
-  | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
-  | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
-  | ident as s ':' 
-      { fprintf fmt "{\\color{red}"; print_ident fmt s;
-	fprintf fmt "\\symbol{58}}"; 
-	pp fmt lexbuf }
-  | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
-  | '$'  { fprintf fmt "\\${}"; pp fmt lexbuf }
-  | ' '  { fprintf fmt "~"; pp fmt lexbuf }
-  | '~'  { fprintf fmt "\\~{}"; pp fmt lexbuf }
-  | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
-  | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf }
   | "#" 
       { 
 	fprintf fmt "{"; 
 	if color () then fprintf fmt "\\color{red}";
-	pp_print_string fmt "\\#{}"; 
+	pp_print_string fmt "\\symbol{35}"; 
 	one_line_comment fmt lexbuf;
 	start_of_line fmt lexbuf;
 	pp fmt lexbuf 
       }
+  | latex_symbol as c 
+         { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
+  | ident as s ':' 
+      { fprintf fmt "{\\color{red}"; print_ident fmt s;
+	fprintf fmt "\\symbol{58}}"; 
+	pp fmt lexbuf }
+  | ' '  { fprintf fmt "~"; pp fmt lexbuf }
   | ('.' ident) as s
       { if color () then fprintf fmt "{\\color{violet}"
 	else fprintf fmt "\\textbf{";
@@ -76,17 +71,9 @@ rule pp fmt = parse
 
 and one_line_comment fmt = parse
   | "\n" { fprintf fmt "}~\\linebreak" }
-  | '\\' 
-      { fprintf fmt "\\ensuremath{\\backslash}"; one_line_comment fmt lexbuf }
-  | '{'  { fprintf fmt "\\{"; one_line_comment fmt lexbuf }
-  | '}'  { fprintf fmt "\\}"; one_line_comment fmt lexbuf }
-  | '$' { fprintf fmt "\\${}"; one_line_comment fmt lexbuf }
-  | '#' { fprintf fmt "\\#{}"; one_line_comment fmt lexbuf }
-  | '^' { fprintf fmt "\\^{}"; one_line_comment fmt lexbuf }
-  | '_'  { fprintf fmt "\\_{}"; one_line_comment fmt lexbuf }
-  | '%'  { fprintf fmt "\\%%{}"; one_line_comment fmt lexbuf }
-  | '~'  { fprintf fmt "\\~{}"; one_line_comment fmt lexbuf }
-  | "&" { fprintf fmt "\\&{}"; one_line_comment fmt lexbuf }
+  | latex_symbol as c 
+         { fprintf fmt "\\symbol{%d}" (Char.code c); 
+	   one_line_comment fmt lexbuf }
   | " " { fprintf fmt "~"; one_line_comment fmt lexbuf }
   | "\n" space* eof { fprintf fmt "}" }
   | eof  { fprintf fmt "}" }
@@ -102,15 +89,11 @@ and start_of_line fmt = parse
   let mips fmt s = 
     let lb = from_string s in start_of_line fmt lb; pp fmt lb
   
-  let mips_tt fmt s =
-    fprintf fmt "\\begin{flushleft}\\ttfamily\\parindent 0pt\n";
-    mips fmt s;
-    fprintf fmt "\\end{flushleft}%%\n"
+  let mips_tt = noindent_tt mips
+  let () = Pp.add_pp_environment "mips-tt" mips_tt
 
   let mips_lightblue_tt = lightblue_box_tt mips
- 
   let () = Pp.add_pp_environment "mips-lightblue-tt" mips_lightblue_tt
-  let () = Pp.add_pp_environment "mips-tt" mips_tt
   let () = Pp.add_pp_environment "mips" mips_lightblue_tt
 
 }
