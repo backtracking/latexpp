@@ -24,7 +24,7 @@ let with_options ol f x =
   with e ->
     unroll (); raise e
 
-let () = add "vspacing" "\\medskip"
+let () = add "vspacing" "\\medskip\\noindent"
 let () = add "color" "yes"
 
 (* command line options *)

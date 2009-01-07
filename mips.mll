@@ -95,6 +95,5 @@ and start_of_line fmt = parse
   let mips_lightblue_tt = lightblue_box_tt mips
   let () = Pp.add_pp_environment "mips-lightblue-tt" mips_lightblue_tt
   let () = Pp.add_pp_environment "mips" mips_lightblue_tt
-
 }
 

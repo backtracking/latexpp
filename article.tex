@@ -1,0 +1,54 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{graphicx,alltt}
+\usepackage[french]{babel}
+\usepackage[latin1]{inputenc}
+%\usepackage[T1]{fontenc}
+\begin{document}
+
+\subsection{tt}
+
+environnement \texttt{tt} :
+\begin{tt}
+#tagada         #
+#une autre ligne#
+\end{tt}
+
+environment \texttt{lightblue-tt}
+\begin{lightblue-tt}
+module M = struct
+  type          t = int -> int * int           a
+  and           u = int                       aa
+  toto :  titi
+  toto::  tutu
+  toto :: tutu
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+\end{lightblue-tt}
+
+caractères spéciaux
+\begin{lightblue-tt}
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+### $$$ \\\ ::: ___ %%% ~~~ ;;; &&& ^^^ {{{ }}}
+\end{lightblue-tt}%$
+
+\subsection{mips}
+
+\noindent tout d'abord l'environnement \texttt{mips} :
+\begin{mips}
+addi $sp, -4
+\end{mips}%$
+et la ligne qui suit...
+
+\bigskip
+
+et maintenant l'environnement \texttt{mips-tt} :
+\begin{mips-tt}
+addi $sp, -4
+\end{mips-tt}
+et la ligne qui suit...
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
