@@ -13,7 +13,7 @@
 	"logic"; "axiom"; "parameter"; "predicate"; "type"; "exception";
 
 	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in"; "rec";
-	"assert"; "begin"; "end"; "ref";
+	"assert"; "begin"; "end"; "ref"; "try"; "with"; "raise";
       ]; 
     h
 
