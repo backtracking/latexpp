@@ -107,12 +107,12 @@ TAR=$(EXPORTDIR).tar
 FTP = $$HOME/ftp/$(NAME)
 WWW = $$HOME/WWW/$(NAME)
 
-FILES = *.ml* $(NAME).1 manual.tex	     \
+FILES = *.ml* *.tex	     \
 	Makefile.in configure configure.in   \
-	.depend README INSTALL COPYING GPL CHANGES
+	.depend README  COPYING LICENSE
 
 export: source 
-	cp README COPYING GPL CHANGES $(FTP)
+	cp README COPYING LICENSE $(FTP)
 
 source: 
 	mkdir -p export/$(EXPORTDIR)
