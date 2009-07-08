@@ -111,7 +111,7 @@ FILES = *.ml* $(NAME).1 manual.tex	     \
 	Makefile.in configure configure.in   \
 	.depend README INSTALL COPYING GPL CHANGES
 
-export: source binary export-doc
+export: source 
 	cp README COPYING GPL CHANGES $(FTP)
 
 source: 
