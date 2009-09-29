@@ -32,6 +32,7 @@ let () = add "color" "yes"
 let input_file = ref None
 let output_file = ref None
 let whizzytex = ref false
+let auto_spacing = ref true
 
 type command = Add of string * string | Remove of string
 
@@ -86,6 +87,8 @@ let spec =
     "<o> sets global option <o> to value `no'";
     "-clear", String remove,
     "<o> removes any value for global option <o>";
+    "-no-auto-spacing", Clear auto_spacing,
+    "disables auto spacing";
   ]
 
 let usage_msg = "latexpp [options] [file]"
@@ -117,6 +120,7 @@ let () =
 let input_file = !input_file
 let output_file = !output_file
 let whizzytex = !whizzytex
+let auto_spacing = !auto_spacing
 
 let env_mappings = List.rev !env_mappings
 let macro_mappings = List.rev !macro_mappings

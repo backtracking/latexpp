@@ -9,6 +9,8 @@ type command = Add of string * string | Remove of string
 val env_mappings : command list
 val macro_mappings : command list
 
+val auto_spacing : bool
+
 (* pp options *)
 
 val add : string -> string -> unit
