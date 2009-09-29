@@ -11,3 +11,4 @@ c.ml tt.ml why.ml
 java.ml mips.ml pascal.ml
 ._whizzy_article.tex _whizzy_article.aux _whizzy_article_d _whizzy_article.dif _whizzy_article.fmt _whizzy_article.last _whizzy_article.log _whizzy_article.new _whizzy_article_nil.aux _whizzy_article_nil.log _whizzy_article_nil.tex _whizzy_article_nil.waux _whizzy_article.raux _whizzy_article.tex _whizzy_article.wpdf
 article.pdf article.raux article.waux article.wpdf
+export
