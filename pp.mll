@@ -79,10 +79,9 @@ rule pp = parse
 	if auto_spacing then begin
 	  match String.length s with
 	    | 2 -> ()
-	    | 3 -> print_string "\\smallskip\n"
-	    | 4 -> print_string "\\medskip\n"
-	    | 5 -> print_string "\\bigskip\n"
-	    | _ -> print_string "\\bigskip\\bigskip\n"
+	    | 3 -> print_string "\\bigskip\n"
+	    | 4 -> print_string "\\bigskip\\bigskip\n"
+	    | _ -> print_string "\\bigskip\\bigskip\\bigskip\n"
 	end;
 	pp lexbuf
       }
