@@ -16,6 +16,7 @@
       "method"; "mod"; "module"; "mutable"; "new"; "object"; "of";
       "open"; "or"; "private"; "rec"; "sig"; "struct"; "then"; "to";
       "true"; "try"; "type"; "val"; "virtual"; "when"; "while"; "with";
+      "raise";
     ] 
 
   let color () = is_set "color"
