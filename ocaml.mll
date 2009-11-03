@@ -16,8 +16,12 @@
       "method"; "mod"; "module"; "mutable"; "new"; "object"; "of";
       "open"; "or"; "private"; "rec"; "sig"; "struct"; "then"; "to";
       "true"; "try"; "type"; "val"; "virtual"; "when"; "while"; "with";
-      "raise";
+      "raise"; 
     ] 
+
+  let is_keyword s =
+    is_keyword s || 
+    is_set "ocamllex" && (s = "rule" || s = "parse" || s = "shortest")
 
   let color () = is_set "color"
   let is_tt = ref true
@@ -50,8 +54,10 @@ rule pp fmt = parse
   | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; pp fmt lexbuf }
   | "<>" { fprintf fmt "\\ensuremath{\\not=}"; pp fmt lexbuf }
   | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
-  | "'a'" as s { pp_print_string fmt s; pp fmt lexbuf }
-  | "*"  { fprintf fmt "\\ensuremath{\\times}"; pp fmt lexbuf }
+  | "*" as c 
+      { if is_set "ocamllex" then pp_print_char fmt c
+	else fprintf fmt "\\ensuremath{\\times}"; 
+	pp fmt lexbuf }
   | "(*" 
       { 
 	fprintf fmt "{";
@@ -60,6 +66,19 @@ rule pp fmt = parse
 	fprintf fmt "}";
 	pp fmt lexbuf 
       }
+  (* strings *)
+  | '"' as c 
+      { pp_print_char fmt c; string fmt lexbuf; pp fmt lexbuf }
+  (* characters *)
+  | "'" (latex_symbol as c) "'"
+         { fprintf fmt "'\\symbol{%d}'" (Char.code c); pp fmt lexbuf }
+  | "'" _ "'" as s
+      { pp_print_string fmt s; pp fmt lexbuf }
+  | "'\\\\'" 
+      { pp_print_string fmt "'\\symbol{92}\\symbol{92}'"; pp fmt lexbuf }
+  | "'\\" ([^'\'']* as s) "'"
+      { pp_print_string fmt "'\\symbol{92}"; pp_print_string fmt s;
+	pp_print_string fmt "'"; pp fmt lexbuf }
   | ident as s
       { 
 	if is_keyword s then begin
@@ -102,6 +121,21 @@ and comment fmt = parse
   | _ as c  
       { pp_print_char fmt c; comment fmt lexbuf }
 
+and string fmt = parse
+  | '"' as c { pp_print_char fmt c }
+  | latex_symbol as c 
+         { fprintf fmt "\\symbol{%d}" (Char.code c); string fmt lexbuf }
+  | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; string fmt lexbuf }
+  | "\n" 
+      { fprintf fmt "~\\linebreak"; string fmt lexbuf }
+  | '\\' '"'
+      { fprintf fmt "\\symbol{92}\""; string fmt lexbuf }
+  | '{'  { fprintf fmt "\\symbol{123}"; string fmt lexbuf }
+  | '}'  { fprintf fmt "\\symbol{125}"; string fmt lexbuf }
+  | "\n" space* eof { }
+  | eof  { }
+  | _ as c { pp_print_char fmt c; string fmt lexbuf }
+
 and start_of_line fmt = parse
   | space* as s
       { indentation fmt (count_spaces s); pp fmt lexbuf }
@@ -122,6 +156,10 @@ and start_of_line fmt = parse
   let ocaml_sf = 
     noindent_sf (fun fmt s -> is_tt := false; ocaml fmt s; is_tt := true)
   let () = Pp.add_pp_environment "ocaml-sf" ocaml_sf
+
+  let ocamllex_lightblue_tt = 
+    lightblue_box_tt (fun fmt -> with_options ["ocamllex","yes"] (ocaml fmt))
+  let () = Pp.add_pp_environment "ocamllex" ocamllex_lightblue_tt
 
   let texttt fmt s =
     fprintf fmt "\\texttt{";

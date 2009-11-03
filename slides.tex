@@ -49,6 +49,34 @@ and environment \texttt{ocaml-sf}
 \end{ocaml-sf}
 \end{frame}
 
+\begin{frame}\frametitle{Chaînes de caractères}
+\begin{ocaml}
+  let s = "toto"
+  let s = "a (* hop *) b"
+  let c = 'a'
+  let c = '\\' 
+  let c = '\123'
+  let c = '\n'
+  let c = '"'
+  let s = "abc\"def"
+  let s = "abc\\def\nghi\123"
+  let s = "abc"
+\end{ocaml}
+\begin{ocaml}
+  | '\n' space* "}"
+\end{ocaml}
+
+\end{frame}
+
+\begin{frame}\frametitle{Ocamllex}
+\begin{ocamllex}
+let x = ['a'-'z']    
+rule f = parse
+| "(*" { action } (* commentaire *)
+| "*)" { autre action } 
+\end{ocamllex}
+\end{frame}
+
 \begin{frame}\frametitle{mips}
 avant
 \begin{mips}
