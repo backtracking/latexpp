@@ -59,13 +59,9 @@ and environment \texttt{ocaml-sf}
   let c = '\n'
   let c = '"'
   let s = "abc\"def"
-  let s = "abc\\def\nghi\123"
+  let s = "abc\n\t\123\\" (* abc *)
   let s = "abc"
 \end{ocaml}
-\begin{ocaml}
-  | '\n' space* "}"
-\end{ocaml}
-
 \end{frame}
 
 \begin{frame}\frametitle{Ocamllex}
