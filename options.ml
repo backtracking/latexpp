@@ -26,6 +26,7 @@ let with_options ol f x =
 
 let () = add "vspacing" "\\medskip\\noindent"
 let () = add "color" "yes"
+let () = add "keywords" "yes"
 
 (* command line options *)
 

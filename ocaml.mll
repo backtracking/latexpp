@@ -81,7 +81,7 @@ rule pp fmt = parse
 	pp_print_string fmt "'"; pp fmt lexbuf }
   | ident as s
       { 
-	if is_keyword s then begin
+	if is_set "keywords" && is_keyword s then begin
 	  if color () then fprintf fmt "{\\color{blue}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
@@ -162,6 +162,10 @@ and start_of_line fmt = parse
   let ocamllex_lightblue_tt = 
     lightblue_box_tt (fun fmt -> with_options ["ocamllex","yes"] (ocaml fmt))
   let () = Pp.add_pp_environment "ocamllex" ocamllex_lightblue_tt
+
+  let pseudocode_lightblue_tt = 
+    lightblue_box_tt (fun fmt -> with_options ["keywords","no"] (ocaml fmt))
+  let () = Pp.add_pp_environment "pseudocode" pseudocode_lightblue_tt
 
   let texttt fmt s =
     fprintf fmt "\\texttt{";
