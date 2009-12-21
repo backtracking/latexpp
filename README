@@ -2,6 +2,8 @@
 (this is the only documentation so far)
 
 predefined environments:
+- math (greek letters, forall, ->, etc.)
+- rules (inference rules)
 - verbatim
 - alltt
 - copy: simply copies its argument
@@ -17,6 +19,7 @@ predefined environments:
 predefined macros:
 - copy: simply copies its argument
 - ignore: /dev/null
+- math
 
 predefined options:
 - color=yes

@@ -12,3 +12,5 @@ java.ml mips.ml pascal.ml
 ._whizzy_article.tex _whizzy_article.aux _whizzy_article_d _whizzy_article.dif _whizzy_article.fmt _whizzy_article.last _whizzy_article.log _whizzy_article.new _whizzy_article_nil.aux _whizzy_article_nil.log _whizzy_article_nil.tex _whizzy_article_nil.waux _whizzy_article.raux _whizzy_article.tex _whizzy_article.wpdf
 article.pdf article.raux article.waux article.wpdf
 export
+math.ml _whizzy_slides_d _whizzy_test.aux _whizzy_test_d _whizzy_test.dif _whizzy_test.fmt _whizzy_test.last _whizzy_test.log _whizzy_test.new _whizzy_test_nil.aux _whizzy_test_nil.log _whizzy_test_nil.out _whizzy_test_nil.tex _whizzy_test_nil.waux _whizzy_test.out _whizzy_testpp_d _whizzy_test.raux _whizzy_test.tex _whizzy_test.wpdf
+slides.pdf test.pdf testpp.pdf slides.out test.out testpp.out _whizzy_test_nil.out _whizzy_test.out
