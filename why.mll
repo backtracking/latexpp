@@ -52,7 +52,7 @@ let space = [' ' '\t']
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* 
 
 rule pp fmt = parse
-  | '{'  { if color () then fprintf fmt "{\\color{red}";
+  | '{'  { if color () then fprintf fmt "{\\color{darkgreen}";
 	   fprintf fmt "\\{"; pp fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; 
 	   if color () then fprintf fmt "}"; pp fmt lexbuf }
@@ -80,7 +80,7 @@ rule pp fmt = parse
   | "(*" 
       { 
 	fprintf fmt "\\emph{"; 
-	if color () then fprintf fmt "\\color{violet}";
+	if color () then fprintf fmt "\\color{red}";
 	pp_print_string fmt "(*"; comment fmt lexbuf; 
 	fprintf fmt "}"; 
 	pp fmt lexbuf 
@@ -183,6 +183,6 @@ and start_of_line fmt = parse
 
   let () = Pp.add_pp_macro "why-tt" texttt
   let () = Pp.add_pp_macro "why-sf" textsf
-  let () = Pp.add_pp_macro "why" textsf
+  let () = Pp.add_pp_macro "why" texttt
 }
 
