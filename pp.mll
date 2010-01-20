@@ -40,6 +40,17 @@
       eprintf "latexpp: unknown preprocesseur `%s'@." pp; 
       exit 1
 
+  let ppenvsopts = Hashtbl.create 17
+  let add_pp_envsopts s (f:(string -> unit) -> string list -> unit) = Hashtbl.add ppenvsopts s f
+  let remove_envsopts = Hashtbl.remove ppenvsopts
+
+  let map_envsopts m pp = 
+    try
+      Hashtbl.add ppenvsopts m (Hashtbl.find ppenvsopts pp)
+    with Not_found ->
+      eprintf "latexpp: unknown environnement options `%s'@." pp; 
+      exit 1
+
   let error l msg =
     eprintf "%s:%d: %s@." l.pos_fname l.pos_lnum msg; 
     exit 1 
@@ -50,28 +61,59 @@ let space = [' ' '\t' '\r']
 let newline = '\n'
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9' '-']* 
 
-rule pp = parse
-  | "%latexpp" space+ "-g" space+ (ident as o) space+ (ident as v) space* '\n'
+rule latexpp = parse
+  | space+ "-g" space+ (ident as o) space+ (ident as v) space* '\n'
       { 
 	Options.add o v; newline lexbuf; pp lexbuf
       }
-  | "%latexpp" space+ "-g" space+ (ident as o) space+ 
+  | space+ "-g" space+ (ident as o) space+ 
     '"' ([^ '"' '\n']* as v) '"' space* '\n'
       { 
 	Options.add o v; newline lexbuf; pp lexbuf
       }
-  | "%latexpp" space+ ("-e" | "-m" as o) 
+  | space+ ("-e" | "-m" as o) 
     space+ (ident as id1) space+ (ident as id2) space* '\n'
       {
 	(if o = "-e" then map_environment else map_macro) id1 id2;
 	newline lexbuf;
 	pp lexbuf
       }
-  | "%" [^ '\n']* '\n' as s
-      { 
-	print_string s;
-	newline lexbuf;
-	pp lexbuf 
+  | space+ "-eo" space+ (ident as env) space+ ("subst" as opt)
+    space+ 
+      {
+        let l = lexeme_start_p lexbuf in
+        let id = "-oe subst" in
+        let v1 = value l id lexbuf in
+        let () = spaces lexbuf in
+	let v2 = value l id lexbuf in
+        let error s = error l s in
+        (Hashtbl.find ppenvsopts env) error [opt;v1;v2];
+	pp lexbuf
+      }
+  | _ {
+      let l = lexeme_start_p lexbuf in
+      error l "Wrong options to %latexpp"
+    }
+
+and untilendofline = parse
+  | [^ '\n']* '\n' as s {newline lexbuf;s}
+
+and pp = parse
+  | '%' ident+ as s
+      {
+        if s = "%latexpp" then begin
+          latexpp lexbuf
+        end else begin
+          print_string s;
+          print_string (untilendofline lexbuf)
+        end;
+        pp lexbuf          
+      }
+  | '%'
+      {
+        print_string "%";
+        print_string (untilendofline lexbuf);
+        pp lexbuf
       }
   | '\n' '\n' '\n'* as s 
       { print_string s;
@@ -191,6 +233,9 @@ and value l o = parse
       { error l "unterminated options" }
   | _
       { error l ("syntax error in value for option " ^ o) }
+
+and spaces = parse
+  | space* {()}
 
 {
 

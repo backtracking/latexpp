@@ -21,6 +21,9 @@
 
   let tab_size = 8
 
+  let substitutions = Hashtbl.create 20
+  let is_substituted = Hashtbl.mem substitutions
+
   let count_spaces s =
     let c = ref 0 in
     for i = 0 to String.length s - 1 do
@@ -63,6 +66,11 @@ rule pp fmt = parse
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
   | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf }
+
+  | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
+  | "forall" { fprintf fmt "\\ensuremath{\\forall}"; pp fmt lexbuf }
+  | '$' ([^'$']* as s) '$' { fprintf fmt "\\ensuremath{_{%a}}" pp (from_string s); pp fmt lexbuf}
+
 (*
   | "|" { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
   | ">" { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
@@ -92,6 +100,9 @@ rule pp fmt = parse
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
 	  fprintf fmt "}"
+            
+	end else if is_substituted s then begin
+          pp_print_string fmt (Hashtbl.find substitutions s)
 	end else 
           print_ident fmt s;
 	pp fmt lexbuf 
@@ -184,5 +195,12 @@ and start_of_line fmt = parse
   let () = Pp.add_pp_macro "why-tt" texttt
   let () = Pp.add_pp_macro "why-sf" textsf
   let () = Pp.add_pp_macro "why" texttt
+
+  let () = Pp.add_pp_envsopts "why"
+    (fun error opts -> 
+       match opts with
+         | [] -> assert false
+         | ["subst";v1;v2] -> Hashtbl.add substitutions v1 v2
+         | s::_ -> error ("envopts why : Unknown option "^s))
 }
 
