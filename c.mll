@@ -70,7 +70,8 @@ rule pp fmt = parse
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
   | '~'  { fprintf fmt "\\~{}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
-  | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf }
+  | "--" { if !tt then fprintf fmt "--" else fprintf fmt "\\ensuremath{-{}-}"; 
+	   pp fmt lexbuf }
   | ">" { if !tt then fprintf fmt ">" else fprintf fmt "\\ensuremath{>}"; 
 	  pp fmt lexbuf }
   | "<" { if !tt then fprintf fmt "<" else fprintf fmt "\\ensuremath{<}"; 
