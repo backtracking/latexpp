@@ -108,8 +108,8 @@ and one_line_comment fmt = parse
   | "\n" { fprintf fmt "}~\\linebreak" }
   | '\\' 
       { fprintf fmt "\\symbol{92}"; one_line_comment fmt lexbuf }
-  | '{'  { fprintf fmt "\\{"; one_line_comment fmt lexbuf }
-  | '}'  { fprintf fmt "\\}"; one_line_comment fmt lexbuf }
+  | '{'  { fprintf fmt "\\symbol{123}"; one_line_comment fmt lexbuf }
+  | '}'  { fprintf fmt "\\symbol{125}"; one_line_comment fmt lexbuf }
   | '$' { fprintf fmt "\\${}"; one_line_comment fmt lexbuf }
   | '#' { fprintf fmt "\\#{}"; one_line_comment fmt lexbuf }
   | '^' { fprintf fmt "\\^{}"; one_line_comment fmt lexbuf }
@@ -130,8 +130,8 @@ and comment fmt = parse
 	comment fmt lexbuf }
   | '\\' 
       { fprintf fmt "\\symbol{92}"; comment fmt lexbuf }
-  | '{'  { fprintf fmt "\\{"; comment fmt lexbuf }
-  | '}'  { fprintf fmt "\\}"; comment fmt lexbuf }
+  | '{'  { fprintf fmt "\\symbol{123}"; comment fmt lexbuf }
+  | '}'  { fprintf fmt "\\symbol{125}"; comment fmt lexbuf }
   | '$' { fprintf fmt "\\${}"; comment fmt lexbuf }
   | '#' { fprintf fmt "\\#{}"; comment fmt lexbuf }
   | '^' { fprintf fmt "\\^{}"; comment fmt lexbuf }
