@@ -53,15 +53,15 @@ let space = [' ' '\t']
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* 
 
 rule pp fmt = parse
-  | '{'  { fprintf fmt "\\{"; pp fmt lexbuf }
-  | '}'  { fprintf fmt "\\}"; pp fmt lexbuf }
+  | '{'  { fprintf fmt "\\symbol{123}"; pp fmt lexbuf }
+  | '}'  { fprintf fmt "\\symbol{125}"; pp fmt lexbuf }
   | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
   | '$'  { fprintf fmt "\\${}"; pp fmt lexbuf }
   | ' '  { fprintf fmt "~"; pp fmt lexbuf }
   | '~'  { fprintf fmt "\\~{}"; pp fmt lexbuf }
-  | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
+  | '\\'  { fprintf fmt "\\symbol{92}"; pp fmt lexbuf }
   | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf }
   | '"' as c { pp_print_char fmt c; string fmt lexbuf; pp fmt lexbuf }
   | "/*" 
@@ -107,7 +107,7 @@ rule pp fmt = parse
 and one_line_comment fmt = parse
   | "\n" { fprintf fmt "}~\\linebreak" }
   | '\\' 
-      { fprintf fmt "\\ensuremath{\\backslash}"; one_line_comment fmt lexbuf }
+      { fprintf fmt "\\symbol{92}"; one_line_comment fmt lexbuf }
   | '{'  { fprintf fmt "\\{"; one_line_comment fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; one_line_comment fmt lexbuf }
   | '$' { fprintf fmt "\\${}"; one_line_comment fmt lexbuf }
@@ -129,7 +129,7 @@ and comment fmt = parse
 	indentation fmt (count_spaces s); 
 	comment fmt lexbuf }
   | '\\' 
-      { fprintf fmt "\\ensuremath{\\backslash}"; comment fmt lexbuf }
+      { fprintf fmt "\\symbol{92}"; comment fmt lexbuf }
   | '{'  { fprintf fmt "\\{"; comment fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; comment fmt lexbuf }
   | '$' { fprintf fmt "\\${}"; comment fmt lexbuf }
