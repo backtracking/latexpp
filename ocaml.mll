@@ -54,6 +54,8 @@ rule pp fmt = parse
   | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; pp fmt lexbuf }
   | "<>" { fprintf fmt "\\ensuremath{\\not=}"; pp fmt lexbuf }
   | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
+  | "'b" { fprintf fmt "\\ensuremath{\\beta}"; pp fmt lexbuf }
+  | "'c" { fprintf fmt "\\ensuremath{\\gamma}"; pp fmt lexbuf }
   | "*" as c 
       { if is_set "ocamllex" then pp_print_char fmt c
 	else fprintf fmt "\\ensuremath{\\times}"; 
