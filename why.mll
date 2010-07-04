@@ -11,9 +11,11 @@
     List.iter (fun s -> Hashtbl.add h s ()) 
       [ 
 	"logic"; "axiom"; "parameter"; "predicate"; "type"; "exception";
+	"use"; "import"; "clone"; "export"; "namespace"; "as"; "theory";
 
 	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in"; "rec";
-	"assert"; "begin"; "end"; "ref"; "try"; "with"; "raise";
+	"assert"; "begin"; "end"; "ref"; "try"; "with"; "raise"; "and";
+	"invariant"; "variant"; 
       ]; 
     h
 
@@ -48,6 +50,8 @@
     String.iter char
 
   let color () = is_set "color"
+  let inside_annotation = ref false
+  let reset () = inside_annotation := false
 
 }
 
@@ -56,8 +60,10 @@ let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']*
 
 rule pp fmt = parse
   | '{'  { if color () then fprintf fmt "{\\color{darkgreen}";
+	   inside_annotation := true;
 	   fprintf fmt "\\{"; pp fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; 
+	   inside_annotation := false;
 	   if color () then fprintf fmt "}"; pp fmt lexbuf }
   | '#' { fprintf fmt "\\#{}"; pp fmt lexbuf }
   | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
@@ -95,7 +101,7 @@ rule pp fmt = parse
       }
   | ident as s
       { 
-	if is_keyword s then begin
+	if is_keyword s && not !inside_annotation then begin
 	  if color () then fprintf fmt "{\\color{blue}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
@@ -162,19 +168,19 @@ and start_of_line fmt = parse
   let why_alltt fmt s =
     fprintf fmt "\\begin{alltt}";
     let lb = from_string s in
-    start_of_line fmt lb; pp fmt lb;
+    reset (); start_of_line fmt lb; pp fmt lb;
     fprintf fmt "\\end{alltt}%%\n"
  
   let why_tt fmt s =
     fprintf fmt "\\begin{flushleft}\\ttfamily\\parindent 0pt\n";
     let lb = from_string s in
-    start_of_line fmt lb; pp fmt lb;
+    reset (); start_of_line fmt lb; pp fmt lb;
     fprintf fmt "\\end{flushleft}%%\n"
  
   let why_sf fmt s =
     fprintf fmt "\\bgroup\\sf\\begin{flushleft}\n";
     let lb = from_string s in
-    start_of_line fmt lb; pp fmt lb;
+    reset (); start_of_line fmt lb; pp fmt lb;
     fprintf fmt "\\end{flushleft}\\egroup\\noindent\n"
  
   let () = Pp.add_pp_environment "why-alltt" why_alltt
