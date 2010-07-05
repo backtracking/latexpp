@@ -5,6 +5,7 @@
   open Lexing 
   open Format
   open Options
+  open Util
 
   let why_keywords = 
     let h = Hashtbl.create 97 in 
@@ -50,47 +51,31 @@
     String.iter char
 
   let color () = is_set "color"
+  let is_tt = ref true
   let inside_annotation = ref false
   let reset () = inside_annotation := false
 
 }
 
 let space = [' ' '\t']
+let latex_symbol = 
+  '\\' | '#' | '$' | ':' | '_' | '%' | '~' | ';' | '&' | '^' 
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* 
 
 rule pp fmt = parse
+  | latex_symbol as c 
+         { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
+  | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; pp fmt lexbuf }
   | '{'  { if color () then fprintf fmt "{\\color{darkgreen}";
 	   inside_annotation := true;
 	   fprintf fmt "\\{"; pp fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; 
 	   inside_annotation := false;
 	   if color () then fprintf fmt "}"; pp fmt lexbuf }
-  | '#' { fprintf fmt "\\#{}"; pp fmt lexbuf }
-  | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
-  | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
-  | ':'  { fprintf fmt "\\ensuremath{\\colon}"; pp fmt lexbuf }
-  | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
-  | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; pp fmt lexbuf }
   | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf }
 
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
   | "forall" { fprintf fmt "\\ensuremath{\\forall}"; pp fmt lexbuf }
-  | '$' ([^'$']* as s) '$' { fprintf fmt "\\ensuremath{_{%a}}" pp (from_string s); pp fmt lexbuf}
-
-(*
-  | "|" { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
-  | ">" { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
-  | "<" { fprintf fmt "\\ensuremath{<}"; pp fmt lexbuf }
-  | '*'  { fprintf fmt "\\ensuremath{\\star}"; pp fmt lexbuf }
-  | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
-  | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
-  | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
-  | "<=" { fprintf fmt "\\ensuremath{\\le}"; pp fmt lexbuf }
-  | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
-  | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
-  | "==" { fprintf fmt "\\ensuremath{\\equiv}"; pp fmt lexbuf }
-  | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; pp fmt lexbuf }
-*)
   | "(*" 
       { 
 	fprintf fmt "\\emph{"; 
@@ -129,29 +114,15 @@ and comment fmt = parse
       { pp_print_string fmt s; comment fmt lexbuf; comment fmt lexbuf }
   | "*)" as s
       { pp_print_string fmt s }
+  | latex_symbol as c 
+      { fprintf fmt "\\symbol{%d}" (Char.code c); comment fmt lexbuf }
+  | ' '  
+      { pp_print_string fmt "\\hspace*{1.22ex}"; comment fmt lexbuf }
   | "\n" (space* as s)
       { fprintf fmt "~\\linebreak"; indentation fmt (count_spaces s);
 	comment fmt lexbuf }
-  | '\\'  { fprintf fmt "\\ensuremath{\\backslash}"; comment fmt lexbuf }
   | '{'  { fprintf fmt "\\{"; comment fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; comment fmt lexbuf }
-  | '#' { fprintf fmt "\\#{}"; comment fmt lexbuf }
-  | '_'  { fprintf fmt "\\_{}"; comment fmt lexbuf }
-  | '%'  { fprintf fmt "\\%%{}"; comment fmt lexbuf }
-  | "&" { fprintf fmt "\\&{}"; comment fmt lexbuf }
-(*
-  | "|" { fprintf fmt "\\ensuremath{|}"; comment fmt lexbuf }
-  | ">" { fprintf fmt "\\ensuremath{>}"; comment fmt lexbuf }
-  | "<" { fprintf fmt "\\ensuremath{<}"; comment fmt lexbuf }
-  | ">=" { fprintf fmt "\\ensuremath{\\ge}"; comment fmt lexbuf }
-  | "<=" { fprintf fmt "\\ensuremath{\\le}"; comment fmt lexbuf }
-  | "=>" { fprintf fmt "\\ensuremath{\\Rightarrow}"; comment fmt lexbuf }
-  | "&&" { fprintf fmt "\\ensuremath{\\land}"; comment fmt lexbuf }
-  | "||" { fprintf fmt "\\ensuremath{\\lor}"; comment fmt lexbuf }
-  | "==" { fprintf fmt "\\ensuremath{\\equiv}"; comment fmt lexbuf }
-  | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; comment fmt lexbuf }
-*)
-  | " " { fprintf fmt "~"; comment fmt lexbuf }
   | eof  
       { () }
   | _ as c  
@@ -165,28 +136,23 @@ and start_of_line fmt = parse
 
 
 {
+  let why fmt s = 
+    let lb = from_string s in reset (); start_of_line fmt lb; pp fmt lb
+    
   let why_alltt fmt s =
     fprintf fmt "\\begin{alltt}";
     let lb = from_string s in
     reset (); start_of_line fmt lb; pp fmt lb;
     fprintf fmt "\\end{alltt}%%\n"
- 
-  let why_tt fmt s =
-    fprintf fmt "\\begin{flushleft}\\ttfamily\\parindent 0pt\n";
-    let lb = from_string s in
-    reset (); start_of_line fmt lb; pp fmt lb;
-    fprintf fmt "\\end{flushleft}%%\n"
- 
-  let why_sf fmt s =
-    fprintf fmt "\\bgroup\\sf\\begin{flushleft}\n";
-    let lb = from_string s in
-    reset (); start_of_line fmt lb; pp fmt lb;
-    fprintf fmt "\\end{flushleft}\\egroup\\noindent\n"
- 
   let () = Pp.add_pp_environment "why-alltt" why_alltt
+ 
+  let why_tt = noindent_tt why
   let () = Pp.add_pp_environment "why-tt" why_tt
-  let () = Pp.add_pp_environment "why-sf" why_sf
   let () = Pp.add_pp_environment "why" why_tt
+ 
+  let why_sf =
+    noindent_sf (fun fmt s -> is_tt := false; why fmt s; is_tt := true)
+  let () = Pp.add_pp_environment "why-sf" why_sf
 
   let texttt fmt s =
     fprintf fmt "\\texttt{";
