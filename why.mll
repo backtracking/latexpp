@@ -13,6 +13,7 @@
       [ 
 	"logic"; "axiom"; "parameter"; "predicate"; "type"; "exception";
 	"use"; "import"; "clone"; "export"; "namespace"; "as"; "theory";
+	"goal";
 
 	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in"; "rec";
 	"assert"; "begin"; "end"; "ref"; "try"; "with"; "raise"; "and";
