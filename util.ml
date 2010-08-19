@@ -36,7 +36,8 @@ let with_vspacing pp fmt s = match Options.find "vspacing" with
 
 let colorname_box_tt color pp fmt s =
   fprintf fmt 
-    "\\colorbox{%s}{\\begin{minipage}{\\textwidth}\\ttfamily\\parindent 0pt\n" color;
+    "\\colorbox{%s}{\\begin{minipage}{\\textwidth}\\ttfamily\\parindent 0pt\n" 
+    color;
   pp fmt s;
   fprintf fmt "\\end{minipage}}\n"
 
