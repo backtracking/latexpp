@@ -182,7 +182,7 @@ and start_of_line fmt = parse
     fprintf fmt "\\end{flushleft}%%\n"
 
   let java_lightblue_tt fmt s =
-    fprintf fmt "\\colorbox{lightblue}{\\begin{minipage}{\\textwidth}\\tt\\parindent 0pt\n";
+    fprintf fmt "\\colorbox{lightblue}{\\begin{minipage}{\\textwidth}\\ttfamily\\parindent 0pt\n";
     let lb = from_string s in
     start_of_line fmt lb; pp fmt lb;
     fprintf fmt "\\end{minipage}}\n"

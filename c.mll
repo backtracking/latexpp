@@ -213,7 +213,7 @@ and start_of_line fmt = parse
     fprintf fmt "\\end{minipage}}%%\n"
 			  
   let c_sf fmt s =
-    fprintf fmt "\\bgroup\\sf\\begin{flushleft}\n";
+    fprintf fmt "\\bgroup\\sffamily\\begin{flushleft}\n";
     let lb = from_string s in
     start_of_line fmt lb; pp fmt lb;
     fprintf fmt "\\end{flushleft}\\egroup\\noindent\n"

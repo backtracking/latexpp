@@ -36,12 +36,12 @@ let with_vspacing pp fmt s = match Options.find "vspacing" with
 
 let colorname_box_tt color pp fmt s =
   fprintf fmt 
-    "\\colorbox{%s}{\\begin{minipage}{\\textwidth}\\tt\\parindent 0pt\n" color;
+    "\\colorbox{%s}{\\begin{minipage}{\\textwidth}\\ttfamily\\parindent 0pt\n" color;
   pp fmt s;
   fprintf fmt "\\end{minipage}}\n"
 
 let rgbcolor_box_tt r g b pp fmt s =
-  fprintf fmt "{\\definecolor{tmpcolor}{rgb}{%.2f,%.2f,%.2f}\\colorbox{tmpcolor}{\\begin{minipage}{\\textwidth}\\tt\\parindent 0pt\n" r g b;
+  fprintf fmt "{\\definecolor{tmpcolor}{rgb}{%.2f,%.2f,%.2f}\\colorbox{tmpcolor}{\\begin{minipage}{\\textwidth}\\ttfamily\\parindent 0pt\n" r g b;
   pp fmt s;
   fprintf fmt "\\end{minipage}}}\n" 
 
@@ -51,13 +51,13 @@ let lightred_box_tt pp = with_vspacing (rgbcolor_box_tt 1.0 0.8 0.8 pp)
 
 let noindent_tt pp = 
   with_vspacing (fun fmt s ->
-    fprintf fmt "\n\n\\noindent{\\tt\\parindent 0pt\n";
+    fprintf fmt "\n\n\\noindent{\\ttfamily\\parindent 0pt\n";
     pp fmt s;
     fprintf fmt "}\n")
 
 let noindent_sf pp = 
   with_vspacing (fun fmt s ->
-    fprintf fmt "\n\n\\noindent{\\sf\\parindent 0pt\n";
+    fprintf fmt "\n\n\\noindent{\\sffamily\\parindent 0pt\n";
     pp fmt s;
     fprintf fmt "}\n")
 
