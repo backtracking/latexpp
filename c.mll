@@ -5,6 +5,7 @@
   open Lexing 
   open Format
   open Options
+  open Util
 
   let c_keywords = 
     let h = Hashtbl.create 97 in 
@@ -53,7 +54,7 @@
     String.iter char
 
   let color () = is_set "color"
-  let tt = ref false
+  let tt = ref true
 
 }
 
@@ -200,38 +201,36 @@ and start_of_line fmt = parse
     let lb = from_string s in
     tt := true; start_of_line fmt lb; pp fmt lb; tt := false;
     fprintf fmt "\\end{alltt}%%\n"
- 
-  let c_tt fmt s =
-    fprintf fmt "\\begin{flushleft}\\ttfamily\\parindent 0pt\n";
-    let lb = from_string s in
-    tt := true; start_of_line fmt lb; pp fmt lb; tt := false;
-    fprintf fmt "\\end{flushleft}%%\n"
 
-  let lightblue_c_tt fmt s =
-    fprintf fmt "\\colorbox{lightblue}{\\begin{minipage}{1.0\\linewidth}\n";
-    c_tt fmt s;
-    fprintf fmt "\\end{minipage}}%%\n"
-			  
-  let c_sf fmt s =
-    fprintf fmt "\\bgroup\\sffamily\\begin{flushleft}\n";
-    let lb = from_string s in
-    start_of_line fmt lb; pp fmt lb;
-    fprintf fmt "\\end{flushleft}\\egroup\\noindent\n"
- 
   let () = Pp.add_pp_environment "c-alltt" c_alltt
+
+  let c fmt s =
+    let lb = from_string s in 
+    start_of_line fmt lb; pp fmt lb
+ 
+  let c_tt = 
+    noindent_tt (fun fmt s -> tt := true; c fmt s; tt := false)
+
   let () = Pp.add_pp_environment "c-tt" c_tt
-  let () = Pp.add_pp_environment "c-sf" c_sf
   let () = Pp.add_pp_environment "c" c_tt
+
+  let lightblue_c_tt = lightblue_box_tt c
+
   let () = Pp.add_pp_environment "lightblue-c" lightblue_c_tt
+			  
+  let c_sf =
+    noindent_sf (fun fmt s -> tt := false; c fmt s; tt := true)
+ 
+  let () = Pp.add_pp_environment "c-sf" c_sf
 
   let texttt fmt s =
     fprintf fmt "\\texttt{";
-    pp fmt (from_string s);
+    tt := true; pp fmt (from_string s); tt := false;
     fprintf fmt "}"
 
   let textsf fmt s =
     fprintf fmt "\\textsf{";
-    pp fmt (from_string s);
+    tt := false; pp fmt (from_string s); tt := true;
     fprintf fmt "}"
 
   let () = Pp.add_pp_macro "c-tt" texttt

@@ -140,22 +140,25 @@ and start_of_line fmt = parse
 
 
 {
-  let why fmt s = 
-    let lb = from_string s in reset (); start_of_line fmt lb; pp fmt lb
-    
   let why_alltt fmt s =
     fprintf fmt "\\begin{alltt}";
     let lb = from_string s in
     reset (); start_of_line fmt lb; pp fmt lb;
     fprintf fmt "\\end{alltt}%%\n"
+
   let () = Pp.add_pp_environment "why-alltt" why_alltt
  
+  let why fmt s = 
+    let lb = from_string s in reset (); start_of_line fmt lb; pp fmt lb
+    
   let why_tt = noindent_tt why
+
   let () = Pp.add_pp_environment "why-tt" why_tt
   let () = Pp.add_pp_environment "why" why_tt
  
   let why_sf =
     noindent_sf (fun fmt s -> is_tt := false; why fmt s; is_tt := true)
+
   let () = Pp.add_pp_environment "why-sf" why_sf
 
   let texttt fmt s =
