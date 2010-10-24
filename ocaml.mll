@@ -34,6 +34,7 @@ let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']*
 
 rule pp fmt = parse
   | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
+  | '|'  { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
   | latex_symbol as c 
          { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
   | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; pp fmt lexbuf }
