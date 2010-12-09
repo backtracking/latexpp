@@ -26,13 +26,24 @@ let print_ident fmt =
   in
   String.iter char
 
-let vspacing () = match Options.find "vspacing" with
-  | None -> ""
-  | Some s -> s
+let vspacing () = Options.find "vspacing"
 
-let with_vspacing pp fmt s = match Options.find "vspacing" with
-  | None -> pp fmt s
-  | Some v -> fprintf fmt "\n\n%s\n" v; pp fmt s; fprintf fmt "\n\n%s\n" v
+let vspacing_before () = match Options.find "vspacing_before" with
+  | None -> vspacing ()
+  | Some _ as s -> s
+
+let vspacing_after () = match Options.find "vspacing_after" with
+  | None -> vspacing ()
+  | Some _ as s -> s
+
+let with_vspacing pp fmt s = 
+  let print_sep = function
+    | None -> ()
+    | Some v -> fprintf fmt "\n\n%s\n" v
+  in
+  print_sep (vspacing_before ());
+  pp fmt s;
+  print_sep (vspacing_after ())
 
 let colorname_box_tt color pp fmt s =
   fprintf fmt 
