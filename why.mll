@@ -76,6 +76,7 @@ rule pp fmt = parse
   | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf }
 
   | "->" { fprintf fmt "\\ensuremath{\\Rightarrow}"; pp fmt lexbuf }
+  | "<->" { fprintf fmt "\\ensuremath{\\Leftrightarrow}"; pp fmt lexbuf }
   | "forall" { fprintf fmt "\\ensuremath{\\forall}"; pp fmt lexbuf }
   | "exists" { fprintf fmt "\\ensuremath{\\exists}"; pp fmt lexbuf }
   | "and" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
