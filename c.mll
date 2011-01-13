@@ -28,6 +28,17 @@
 
   let is_type = Hashtbl.mem c_types
 
+  let framac_keywords = 
+    let h = Hashtbl.create 97 in 
+    List.iter (fun s -> Hashtbl.add h s ()) 
+      [ 
+	"inductive"; "case"; "null"; "valid";"assert";
+        "assume"; (* assume is not a keyword of framac but it's handy *)
+      ]; 
+    h
+
+  let is_framac_keyword = Hashtbl.mem framac_keywords  
+
   let tab_size = 8
 
   let count_spaces s =
@@ -97,6 +108,11 @@ rule pp fmt = parse
   | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
   | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
 *)
+  | "/*@" 
+      { 
+	pp_print_string fmt "/*@"; framac fmt lexbuf; 
+	pp fmt lexbuf 
+      }
   | "/*" 
       { 
 	fprintf fmt "\\emph{"; 
@@ -173,6 +189,78 @@ and comment fmt = parse
       { () }
   | _ as c  
       { pp_print_char fmt c; comment fmt lexbuf }
+
+and framac fmt = parse
+  | '{'  { fprintf fmt "\\symbol{123}"; framac fmt lexbuf }
+  | '}'  { fprintf fmt "\\symbol{125}"; framac fmt lexbuf }
+  | '#' { fprintf fmt "\\#{}"; framac fmt lexbuf }
+  | '_'  { fprintf fmt "\\_{}"; framac fmt lexbuf }
+  | '%'  { fprintf fmt "\\%%{}"; framac fmt lexbuf }
+  | ':'  { fprintf fmt "\\ensuremath{\\colon}"; framac fmt lexbuf }
+  | '&'  { fprintf fmt "\\&{}"; framac fmt lexbuf }
+  | '~'  { fprintf fmt "\\symbol{126}"; framac fmt lexbuf }
+  | '\\'  { fprintf fmt "\\symbol{92}"; framac fmt lexbuf }
+  | "--" { if !tt then fprintf fmt "--" else fprintf fmt "\\ensuremath{-{}-}"; 
+	   framac fmt lexbuf }
+  | ">" { if !tt then fprintf fmt ">" else fprintf fmt "\\ensuremath{>}"; 
+	  framac fmt lexbuf }
+  | "<" { if !tt then fprintf fmt "<" else fprintf fmt "\\ensuremath{<}"; 
+	  framac fmt lexbuf }
+  | ">=" { if !tt then fprintf fmt ">=" else fprintf fmt "\\ensuremath{\\ge}"; 
+	   framac fmt lexbuf }
+  | "<=" { if !tt then fprintf fmt "<=" else fprintf fmt "\\ensuremath{\\le}"; 
+	   framac fmt lexbuf }
+  | "==" 
+      { if !tt then fprintf fmt "==" else fprintf fmt "\\ensuremath{\\equiv}"; 
+	framac fmt lexbuf }
+  | "!=" 
+  { if !tt then fprintf fmt "!=" else fprintf fmt "\\ensuremath{\\not\\equiv}";
+    framac fmt lexbuf }
+  | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; framac fmt lexbuf }
+  | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; framac fmt lexbuf }
+  | ">" { fprintf fmt "\\ensuremath{>}"; framac fmt lexbuf }
+  | "<" { fprintf fmt "\\ensuremath{<}"; framac fmt lexbuf }
+  | ">=" { fprintf fmt "\\ensuremath{\\ge}"; framac fmt lexbuf }
+  | "<=" { fprintf fmt "\\ensuremath{\\le}"; framac fmt lexbuf }
+  | "==>" { fprintf fmt "\\ensuremath{\\Rightarrow}"; framac fmt lexbuf }
+  | "&&" { fprintf fmt "\\ensuremath{\\land}"; framac fmt lexbuf }
+  | "||" { fprintf fmt "\\ensuremath{\\lor}"; framac fmt lexbuf }
+  | "==" { fprintf fmt "\\ensuremath{\\equiv}"; framac fmt lexbuf }
+  | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; framac fmt lexbuf }
+  | "\\forall" { fprintf fmt "\\ensuremath{\\forall}"; framac fmt lexbuf }
+  | "@*/" as s { pp_print_string fmt s }
+  | ('\\'? as b) (ident as s)
+      { 
+        let print_backslach ()=
+          if b = "\\" then pp_print_string fmt "\\symbol{92}" in
+	if is_framac_keyword s then begin
+	  if color () then fprintf fmt "{\\color{blue}"
+	  else fprintf fmt "\\textbf{";
+          print_backslach ();
+	  pp_print_string fmt s;
+	  fprintf fmt "}"
+	end else if is_type s then begin
+	  if color () then fprintf fmt "{\\color{darkgreen}"
+	  else fprintf fmt "\\textbf{";
+          print_backslach ();
+	  pp_print_string fmt s;
+	  fprintf fmt "}"
+	end else begin
+          print_backslach ();
+          print_ident fmt s;
+        end;
+	framac fmt lexbuf 
+      }
+  | "\n" (space* as s)
+      { fprintf fmt "~\\linebreak"; 
+	indentation fmt (count_spaces s); 
+	framac fmt lexbuf }
+  | "\n" space* eof
+      { pp_print_string fmt "\n" }
+  | eof  
+      { () }
+  | _ as c  
+      { pp_print_char fmt c; framac fmt lexbuf }
 
 and one_line_comment fmt = parse
   | "\n" { () }
