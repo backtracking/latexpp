@@ -77,8 +77,10 @@ rule pp fmt = parse
 
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
   | "<->" { fprintf fmt "\\ensuremath{\\leftrightarrow}"; pp fmt lexbuf }
-  | "forall" { fprintf fmt "\\ensuremath{\\forall}"; pp fmt lexbuf }
-  | "exists" { fprintf fmt "\\ensuremath{\\exists}"; pp fmt lexbuf }
+  | "<=" { fprintf fmt "\\ensuremath{\\le}"; pp fmt lexbuf }
+  | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
+  | "forall" { fprintf fmt "\\ensuremath{\\forall\\!}"; pp fmt lexbuf }
+  | "exists" { fprintf fmt "\\ensuremath{\\exists\\!}"; pp fmt lexbuf }
   | "and" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
   | "or" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
   | "(*" 
