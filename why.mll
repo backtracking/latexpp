@@ -75,8 +75,8 @@ rule pp fmt = parse
 	   if color () then fprintf fmt "}"; pp fmt lexbuf }
   | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf }
 
-  | "->" { fprintf fmt "\\ensuremath{\\Rightarrow}"; pp fmt lexbuf }
-  | "<->" { fprintf fmt "\\ensuremath{\\Leftrightarrow}"; pp fmt lexbuf }
+  | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
+  | "<->" { fprintf fmt "\\ensuremath{\\leftrightarrow}"; pp fmt lexbuf }
   | "forall" { fprintf fmt "\\ensuremath{\\forall}"; pp fmt lexbuf }
   | "exists" { fprintf fmt "\\ensuremath{\\exists}"; pp fmt lexbuf }
   | "and" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
