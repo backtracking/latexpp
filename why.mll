@@ -67,7 +67,7 @@ rule pp fmt = parse
   | latex_symbol as c 
          { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
   | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; pp fmt lexbuf }
-  | '{'  { if color () then fprintf fmt "{\\color{darkgreen}";
+  | '{'  { if color () then fprintf fmt "{\\color{colorspec}";
 	   inside_annotation := true;
 	   fprintf fmt "\\{"; pp fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; 
