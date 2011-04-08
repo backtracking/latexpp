@@ -17,7 +17,7 @@
 
 	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in"; "rec";
 	"assert"; "begin"; "end"; "ref"; "try"; "with"; "raise"; "and";
-	"invariant"; "variant"; "match";
+	"invariant"; "variant"; "match"; "label";
       ]; 
     h
 
