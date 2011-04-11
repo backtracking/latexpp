@@ -13,7 +13,7 @@
       [ 
 	"logic"; "axiom"; "parameter"; "predicate"; "type"; "exception";
 	"use"; "import"; "clone"; "export"; "namespace"; "as"; "theory";
-	"goal";
+	"goal"; "lemma"; "module";
 
 	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in"; "rec";
 	"assert"; "begin"; "end"; "ref"; "try"; "with"; "raise"; "and";
@@ -67,6 +67,8 @@ rule pp fmt = parse
   | latex_symbol as c 
          { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
   | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; pp fmt lexbuf }
+  | "{|" { fprintf fmt "\\{|"; pp fmt lexbuf }
+  | "|}" { fprintf fmt "|\\}"; pp fmt lexbuf }
   | '{'  { if color () then fprintf fmt "{\\color{colorspec}";
 	   inside_annotation := true;
 	   fprintf fmt "\\{"; pp fmt lexbuf }
@@ -83,6 +85,7 @@ rule pp fmt = parse
   | "exists" { fprintf fmt "\\ensuremath{\\exists\\!}"; pp fmt lexbuf }
   | "and" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
   | "or" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
+  | "(*)" { fprintf fmt "(*)"; pp fmt lexbuf }
   | "(*" 
       { 
 	fprintf fmt "\\emph{"; 
