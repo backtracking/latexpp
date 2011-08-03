@@ -15,7 +15,7 @@
 	"use"; "import"; "clone"; "export"; "namespace"; "as"; "theory";
 	"goal"; "lemma"; "module";
 
-        "function"; "predicate"; "val"; "inductive";
+        "function"; "predicate"; "val"; "inductive"; "mutable";
 
 	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in"; "rec";
 	"assert"; "begin"; "end"; "ref"; "try"; "with"; "raise"; "and";
