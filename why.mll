@@ -18,7 +18,7 @@
         "function"; "predicate"; "val"; "inductive"; "mutable";
 
 	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in"; "rec";
-	"assert"; "begin"; "end"; "ref"; "try"; "with"; "raise"; "and";
+	"assert"; "begin"; "end"; "try"; "with"; "raise"; "and";
 	"invariant"; "variant"; "match"; "label";
       ];
     h
