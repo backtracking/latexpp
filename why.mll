@@ -16,7 +16,7 @@
 	"goal"; "lemma"; "module";
 
         "function"; "predicate"; "val"; "inductive"; "mutable";
-        "for"; "to"; "downto";
+        "for"; "to"; "downto"; "model";
 
 	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in"; "rec";
 	"assert"; "begin"; "end"; "try"; "with"; "raise"; "and";
