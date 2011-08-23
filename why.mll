@@ -92,6 +92,9 @@ rule pp fmt = parse
   | "exists" { fprintf fmt "\\ensuremath{\\exists\\!}"; pp fmt lexbuf }
   | "/\\" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
   | "\\/" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
+  | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
+  | "'b" { fprintf fmt "\\ensuremath{\\beta}"; pp fmt lexbuf }
+  | "'c" { fprintf fmt "\\ensuremath{\\gamma}"; pp fmt lexbuf }
   | "(*)" { fprintf fmt "(*)"; pp fmt lexbuf }
   | "(*"
       {
