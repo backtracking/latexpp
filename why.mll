@@ -84,6 +84,7 @@ rule pp fmt = parse
   | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
   | "<->" { fprintf fmt "\\ensuremath{\\leftrightarrow}"; pp fmt lexbuf }
   | "<" { fprintf fmt "\\ensuremath{<}"; pp fmt lexbuf }
+  | "<<" { fprintf fmt "<<"; pp fmt lexbuf }
   | ">" { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
   | "<=" { fprintf fmt "\\ensuremath{\\le}"; pp fmt lexbuf }
   | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
