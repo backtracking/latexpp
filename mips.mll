@@ -13,7 +13,8 @@
       "beq"; "beqz"; "bnez"; "j"; "sub"; "sll"; "sllv"; "srl"; 
       "sra"; "srlv"; "srav"; "jal"; "jalr"; "add"; "neg"; "mul"; 
       "syscall"; "la"; "jr"; "abs"; "or"; "ori"; "ble"; "bge"; "b";
-      "rol"; "ror"; "seq"; "slt"; "slti"; "sltu"; "sltiu"
+      "rol"; "ror"; "seq"; "slt"; "slti"; "sltu"; "sltiu";
+      "nop";
     ]
 
   let color () = is_set "color"
