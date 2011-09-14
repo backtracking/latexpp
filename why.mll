@@ -20,7 +20,7 @@
 
 	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in"; "rec";
 	"assert"; "begin"; "end"; "try"; "with"; "raise"; "and";
-	"invariant"; "variant"; "match"; "label";
+	"invariant"; "variant"; "match"; "any";
       ];
     h
 
