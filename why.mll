@@ -43,9 +43,22 @@
     done;
     !c
 
+  let line = ref 0
+
   let indentation fmt n =
     let space = 0.5 *. (float n) in
-    fprintf fmt "\n\\noindent\\hspace*{%2.2fem}" space
+    fprintf fmt "\n\\noindent";
+    begin match Options.find "numbering" with
+      | None -> ()
+      | Some n ->
+          let n = try int_of_string n with _ -> 0 in
+          incr line;
+          let s = string_of_int !line in
+          let len = String.length s in
+          let s = if len < n then String.make (n - len) '0' ^ s else s in
+          fprintf fmt "{\\small\\textit{%s}}" s
+    end;
+    fprintf fmt "\\hspace*{%2.2fem}" space
 
   let print_ident fmt =
     let char = function
