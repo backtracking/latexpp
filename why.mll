@@ -101,6 +101,7 @@ rule pp fmt = parse
   | ">" { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
   | "<=" { fprintf fmt "\\ensuremath{\\le}"; pp fmt lexbuf }
   | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
+  | "=" { fprintf fmt "\\ensuremath{=}"; pp fmt lexbuf }
   | "<>" { fprintf fmt "\\ensuremath{\\not=}"; pp fmt lexbuf }
   | "forall" { fprintf fmt "\\ensuremath{\\forall\\!}"; pp fmt lexbuf }
   | "exists" { fprintf fmt "\\ensuremath{\\exists\\!}"; pp fmt lexbuf }
