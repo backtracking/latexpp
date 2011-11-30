@@ -15,6 +15,8 @@
 	"use"; "import"; "clone"; "export"; "namespace"; "as"; "theory";
 	"goal"; "lemma"; "module";
 
+        "reads"; "writes"; "raises";
+
         "function"; "predicate"; "val"; "inductive"; "mutable";
         "for"; "to"; "downto"; "model";
 
