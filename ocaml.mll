@@ -42,6 +42,7 @@ rule pp fmt = parse
 	   pp fmt lexbuf }
   | '}'  { if !is_tt then fprintf fmt "\\symbol{125}" else fprintf fmt "\\}";
 	   pp fmt lexbuf }
+(*
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
   | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
   | ">"  { if !is_tt then fprintf fmt ">" else fprintf fmt "\\ensuremath{>}";
@@ -54,9 +55,13 @@ rule pp fmt = parse
   | "<=" { if !is_tt then fprintf fmt "<="
            else fprintf fmt "\\ensuremath{\\le}";
            pp fmt lexbuf }
+*)
+
 (*   | "|"  { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf } *)
 (*   | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf } *)
 (*   | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf } *)
+
+(*
   | "==" { fprintf fmt "\\ensuremath{\\equiv}"; pp fmt lexbuf }
   | ":=" { if !is_tt then fprintf fmt ":=" else fprintf fmt "\\ensuremath{:=}";
            pp fmt lexbuf }
@@ -69,6 +74,7 @@ rule pp fmt = parse
       { if is_set "ocamllex" then pp_print_char fmt c
 	else fprintf fmt "\\ensuremath{\\times}";
 	pp fmt lexbuf }
+*)
   | "(*"
       {
 	fprintf fmt "{";
