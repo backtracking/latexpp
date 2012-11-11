@@ -78,7 +78,7 @@ rule pp fmt = parse
   | '#' { fprintf fmt "\\#{}"; pp fmt lexbuf }
   | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
-  | ':'  { fprintf fmt "\\ensuremath{\\colon}"; pp fmt lexbuf }
+  (* | ':'  { fprintf fmt "\\ensuremath{\\colon}"; pp fmt lexbuf } *)
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
   | '~'  { fprintf fmt "\\symbol{126}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\symbol{92}"; pp fmt lexbuf }
