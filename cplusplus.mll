@@ -1,5 +1,5 @@
 
-(* C preprocessor *)
+(* C++ preprocessor *)
 
 {
   open Lexing
@@ -10,11 +10,14 @@
   let c_keywords =
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
-      [ "union"; "sizeof";
+      [ "void"; "int"; "char"; "struct";
+        "union"; "sizeof";
         "if"; "else"; "for"; "while";
         "return";
         "register"; "break"; "continue"; "goto";
         "static"; "const";
+
+        "class"; "public"; "protected"; "virtual"; "using"; "namespace";
       ];
     h
 
@@ -292,7 +295,7 @@ and start_of_line fmt = parse
     tt := true; start_of_line fmt lb; pp fmt lb; tt := false;
     fprintf fmt "\\end{alltt}%%\n"
 
-  let () = Pp.add_pp_environment "c-alltt" c_alltt
+  let () = Pp.add_pp_environment "c++-alltt" c_alltt
 
   let c fmt s =
     let lb = from_string s in
@@ -301,17 +304,17 @@ and start_of_line fmt = parse
   let c_tt =
     noindent_tt (fun fmt s -> tt := true; c fmt s; tt := false)
 
-  let () = Pp.add_pp_environment "c-tt" c_tt
-  let () = Pp.add_pp_environment "c" c_tt
+  let () = Pp.add_pp_environment "c++-tt" c_tt
+  let () = Pp.add_pp_environment "c++" c_tt
 
   let lightblue_c_tt = lightblue_box_tt c
 
-  let () = Pp.add_pp_environment "lightblue-c" lightblue_c_tt
+  let () = Pp.add_pp_environment "lightblue-c++" lightblue_c_tt
 
   let c_sf =
     noindent_sf (fun fmt s -> tt := false; c fmt s; tt := true)
 
-  let () = Pp.add_pp_environment "c-sf" c_sf
+  let () = Pp.add_pp_environment "c++-sf" c_sf
 
   let texttt fmt s =
     fprintf fmt "\\texttt{";
@@ -323,8 +326,8 @@ and start_of_line fmt = parse
     tt := false; pp fmt (from_string s); tt := true;
     fprintf fmt "}"
 
-  let () = Pp.add_pp_macro "c-tt" texttt
-  let () = Pp.add_pp_macro "c-sf" textsf
-  let () = Pp.add_pp_macro "c" texttt
+  let () = Pp.add_pp_macro "c++-tt" texttt
+  let () = Pp.add_pp_macro "c++-sf" textsf
+  let () = Pp.add_pp_macro "c++" texttt
 }
 
