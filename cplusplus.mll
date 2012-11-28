@@ -10,8 +10,7 @@
   let c_keywords =
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
-      [ "void"; "int"; "char"; "struct";
-        "union"; "sizeof";
+      [ "union"; "sizeof";
         "if"; "else"; "for"; "while";
         "return";
         "register"; "break"; "continue"; "goto";
@@ -32,17 +31,6 @@
     h
 
   let is_type = Hashtbl.mem c_types
-
-  let framac_keywords =
-    let h = Hashtbl.create 97 in
-    List.iter (fun s -> Hashtbl.add h s ())
-      [
-	"inductive"; "case"; "null"; "valid";"assert";
-        "assume"; (* assume is not a keyword of framac but it's handy *)
-      ];
-    h
-
-  let is_framac_keyword = Hashtbl.mem framac_keywords
 
   let tab_size = 8
 
@@ -71,6 +59,22 @@
 
   let color () = is_set "color"
   let tt = ref true
+
+  let print_green_ident fmt s =
+    fprintf fmt "{\\color{darkgreen}";
+    print_ident fmt s;
+    fprintf fmt "}"
+
+  let ident fmt s =
+    if is_keyword s then begin
+      if color () then fprintf fmt "{\\color{blue}"
+      else fprintf fmt "\\textbf{";
+      pp_print_string fmt s;
+      fprintf fmt "}"
+    end else if is_type s && color () then
+      print_green_ident fmt s
+    else
+      print_ident fmt s
 
 }
 
@@ -103,21 +107,7 @@ rule pp fmt = parse
   | "!="
   { if !tt then fprintf fmt "!=" else fprintf fmt "\\ensuremath{\\not\\equiv}";
     pp fmt lexbuf }
-(*
-  | "|" { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
-  | ">" { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
-  | "<" { fprintf fmt "\\ensuremath{<}"; pp fmt lexbuf }
-  | '*'  { fprintf fmt "\\ensuremath{\\star}"; pp fmt lexbuf }
-  | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
-  | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
-  | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
-  | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
-*)
-  | "/*@"
-      {
-	pp_print_string fmt "/*@"; framac fmt lexbuf;
-	pp fmt lexbuf
-      }
+  | '"' as c { pp_print_char fmt c; string fmt lexbuf; pp fmt lexbuf }
   | "/*"
       {
 	fprintf fmt "\\emph{";
@@ -135,21 +125,24 @@ rule pp fmt = parse
 	pp fmt lexbuf
       }
   | ident as s
-      {
-	if is_keyword s then begin
-	  if color () then fprintf fmt "{\\color{blue}"
-	  else fprintf fmt "\\textbf{";
-	  pp_print_string fmt s;
-	  fprintf fmt "}"
-	end else if is_type s then begin
-	  if color () then fprintf fmt "{\\color{darkgreen}"
-	  else fprintf fmt "\\textbf{";
-	  pp_print_string fmt s;
-	  fprintf fmt "}"
-	end else
-          print_ident fmt s;
-	pp fmt lexbuf
-      }
+      { ident fmt s; pp fmt lexbuf }
+  | (ident as id1) (space+ as s) (('*'* ident) as id2)
+      { begin
+	  if is_keyword id1 || is_keyword id2 || not (color ()) then
+	    ident fmt id1
+	  else
+	    print_green_ident fmt id1
+	end;
+	pp_print_string fmt s; ident fmt id2; pp fmt lexbuf }
+  | (ident as id1) (space+ as s) '&' (ident as id2)
+      { begin
+	  if is_keyword id1 || is_keyword id2 || not (color ()) then
+	    ident fmt id1
+	  else
+	    print_green_ident fmt id1
+	end;
+	pp_print_string fmt s; fprintf fmt "\\&{}"; ident fmt id2;
+        pp fmt lexbuf }
   | "\n" (space* as s)
       { fprintf fmt "~\\linebreak";
 	indentation fmt (count_spaces s);
@@ -177,95 +170,11 @@ and comment fmt = parse
   | '~'  { fprintf fmt "\\~{}"; comment fmt lexbuf }
   | ">" { fprintf fmt ">"; comment fmt lexbuf }
   | "<" { fprintf fmt "<"; comment fmt lexbuf }
-(*
-  | "|" { fprintf fmt "\\ensuremath{|}"; comment fmt lexbuf }
-  | ">" { fprintf fmt "\\ensuremath{>}"; comment fmt lexbuf }
-  | "<" { fprintf fmt "\\ensuremath{<}"; comment fmt lexbuf }
-  | ">=" { fprintf fmt "\\ensuremath{\\ge}"; comment fmt lexbuf }
-  | "<=" { fprintf fmt "\\ensuremath{\\le}"; comment fmt lexbuf }
-  | "=>" { fprintf fmt "\\ensuremath{\\Rightarrow}"; comment fmt lexbuf }
-  | "&&" { fprintf fmt "\\ensuremath{\\land}"; comment fmt lexbuf }
-  | "||" { fprintf fmt "\\ensuremath{\\lor}"; comment fmt lexbuf }
-  | "==" { fprintf fmt "\\ensuremath{\\equiv}"; comment fmt lexbuf }
-  | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; comment fmt lexbuf }
-*)
   | " " { fprintf fmt "~"; comment fmt lexbuf }
   | eof
       { () }
   | _ as c
       { pp_print_char fmt c; comment fmt lexbuf }
-
-and framac fmt = parse
-  | '{'  { fprintf fmt "\\symbol{123}"; framac fmt lexbuf }
-  | '}'  { fprintf fmt "\\symbol{125}"; framac fmt lexbuf }
-  | '#' { fprintf fmt "\\#{}"; framac fmt lexbuf }
-  | '_'  { fprintf fmt "\\_{}"; framac fmt lexbuf }
-  | '%'  { fprintf fmt "\\%%{}"; framac fmt lexbuf }
-  | ':'  { fprintf fmt "\\ensuremath{\\colon}"; framac fmt lexbuf }
-  | '&'  { fprintf fmt "\\&{}"; framac fmt lexbuf }
-  | '~'  { fprintf fmt "\\symbol{126}"; framac fmt lexbuf }
-  | '\\'  { fprintf fmt "\\symbol{92}"; framac fmt lexbuf }
-  | "--" { if !tt then fprintf fmt "--" else fprintf fmt "\\ensuremath{-{}-}";
-	   framac fmt lexbuf }
-  | ">" { if !tt then fprintf fmt ">" else fprintf fmt "\\ensuremath{>}";
-	  framac fmt lexbuf }
-  | "<" { if !tt then fprintf fmt "<" else fprintf fmt "\\ensuremath{<}";
-	  framac fmt lexbuf }
-  | ">=" { if !tt then fprintf fmt ">=" else fprintf fmt "\\ensuremath{\\ge}";
-	   framac fmt lexbuf }
-  | "<=" { if !tt then fprintf fmt "<=" else fprintf fmt "\\ensuremath{\\le}";
-	   framac fmt lexbuf }
-  | "=="
-      { if !tt then fprintf fmt "==" else fprintf fmt "\\ensuremath{\\equiv}";
-	framac fmt lexbuf }
-  | "!="
-  { if !tt then fprintf fmt "!=" else fprintf fmt "\\ensuremath{\\not\\equiv}";
-    framac fmt lexbuf }
-  | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; framac fmt lexbuf }
-  | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; framac fmt lexbuf }
-  | ">" { fprintf fmt "\\ensuremath{>}"; framac fmt lexbuf }
-  | "<" { fprintf fmt "\\ensuremath{<}"; framac fmt lexbuf }
-  | ">=" { fprintf fmt "\\ensuremath{\\ge}"; framac fmt lexbuf }
-  | "<=" { fprintf fmt "\\ensuremath{\\le}"; framac fmt lexbuf }
-  | "==>" { fprintf fmt "\\ensuremath{\\Rightarrow}"; framac fmt lexbuf }
-  | "&&" { fprintf fmt "\\ensuremath{\\land}"; framac fmt lexbuf }
-  | "||" { fprintf fmt "\\ensuremath{\\lor}"; framac fmt lexbuf }
-  | "==" { fprintf fmt "\\ensuremath{\\equiv}"; framac fmt lexbuf }
-  | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; framac fmt lexbuf }
-  | "\\forall" { fprintf fmt "\\ensuremath{\\forall}"; framac fmt lexbuf }
-  | "@*/" as s { pp_print_string fmt s }
-  | ('\\'? as b) (ident as s)
-      {
-        let print_backslach ()=
-          if b = "\\" then pp_print_string fmt "\\symbol{92}" in
-	if is_framac_keyword s then begin
-	  if color () then fprintf fmt "{\\color{blue}"
-	  else fprintf fmt "\\textbf{";
-          print_backslach ();
-	  pp_print_string fmt s;
-	  fprintf fmt "}"
-	end else if is_type s then begin
-	  if color () then fprintf fmt "{\\color{darkgreen}"
-	  else fprintf fmt "\\textbf{";
-          print_backslach ();
-	  pp_print_string fmt s;
-	  fprintf fmt "}"
-	end else begin
-          print_backslach ();
-          print_ident fmt s;
-        end;
-	framac fmt lexbuf
-      }
-  | "\n" (space* as s)
-      { fprintf fmt "~\\linebreak";
-	indentation fmt (count_spaces s);
-	framac fmt lexbuf }
-  | "\n" space* eof
-      { pp_print_string fmt "\n" }
-  | eof
-      { () }
-  | _ as c
-      { pp_print_char fmt c; framac fmt lexbuf }
 
 and one_line_comment fmt = parse
   | "\n" { () }
@@ -280,6 +189,30 @@ and one_line_comment fmt = parse
   | " " { fprintf fmt "~"; one_line_comment fmt lexbuf }
   | eof  { () }
   | _ as c { pp_print_char fmt c; one_line_comment fmt lexbuf }
+
+and string fmt = parse
+  | '"' as c { pp_print_char fmt c }
+  | "\n" (space* as s)
+      { fprintf fmt "~\\linebreak";
+	indentation fmt (count_spaces s);
+	string fmt lexbuf }
+  | '\\' '"'
+      { fprintf fmt "\\ensuremath{\\backslash}\""; string fmt lexbuf }
+  | '\\'
+      { fprintf fmt "\\ensuremath{\\backslash}"; string fmt lexbuf }
+  | '{'  { fprintf fmt "\\{"; string fmt lexbuf }
+  | '}'  { fprintf fmt "\\}"; string fmt lexbuf }
+  | '$' { fprintf fmt "\\${}"; string fmt lexbuf }
+  | '#' { fprintf fmt "\\#{}"; string fmt lexbuf }
+  | '^' { fprintf fmt "\\^{}"; string fmt lexbuf }
+  | '_'  { fprintf fmt "\\_{}"; string fmt lexbuf }
+  | '%'  { fprintf fmt "\\%%{}"; string fmt lexbuf }
+  | '~'  { fprintf fmt "\\~{}"; string fmt lexbuf }
+  | "&" { fprintf fmt "\\&{}"; string fmt lexbuf }
+  | " " { fprintf fmt "~"; string fmt lexbuf }
+  | "\n" space* eof { }
+  | eof  { }
+  | _ as c { pp_print_char fmt c; string fmt lexbuf }
 
 and start_of_line fmt = parse
   | space* as s
