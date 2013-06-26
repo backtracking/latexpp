@@ -191,5 +191,18 @@ and start_of_line fmt = parse
   let () = Pp.add_pp_environment "java-tt" java_tt
   let () = Pp.add_pp_environment "java" java_lightblue_tt
 
+  let texttt fmt s =
+    fprintf fmt "\\texttt{";
+    pp fmt (from_string s);
+    fprintf fmt "}"
+
+  let textsf fmt s =
+    fprintf fmt "\\textsf{";
+    pp fmt (from_string s);
+    fprintf fmt "}"
+
+  let () = Pp.add_pp_macro "java-tt" texttt
+  let () = Pp.add_pp_macro "java-sf" textsf
+  let () = Pp.add_pp_macro "java" textsf
 }
 
