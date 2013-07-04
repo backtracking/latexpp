@@ -11,7 +11,7 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
       [
-	"class"; "extends"; "this"; "super";
+	"class"; "extends"; "this"; "super"; "interface";
 	"public"; "static"; "final"; "abstract"; "private";
 	"throw"; "new"; "for"; "while"; "return"; "instanceof"; "if"; "else";
       ];
