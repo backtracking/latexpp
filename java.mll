@@ -12,7 +12,7 @@
     List.iter (fun s -> Hashtbl.add h s ())
       [
 	"class"; "extends"; "this"; "super"; "interface";
-	"public"; "static"; "final"; "abstract"; "private";
+	"public"; "static"; "final"; "abstract"; "private"; "protected";
 	"throw"; "new"; "for"; "while"; "return"; "instanceof"; "if"; "else";
       ];
     h
