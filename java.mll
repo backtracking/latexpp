@@ -63,6 +63,7 @@ rule pp fmt = parse
   (* | ' '  { fprintf fmt "~"; pp fmt lexbuf } *)
   | '~'  { fprintf fmt "\\~{}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\symbol{92}"; pp fmt lexbuf }
+  | '<'  { fprintf fmt "\\symbol{60}"; pp fmt lexbuf }
   | '>'  { fprintf fmt "\\symbol{62}"; pp fmt lexbuf }
   (* | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf } *)
   | "--" { fprintf fmt "{-{}-}"; pp fmt lexbuf }
