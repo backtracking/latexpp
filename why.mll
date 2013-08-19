@@ -17,6 +17,7 @@
 
         "reads"; "writes"; "raises";
 
+        "constant";
         "function"; "predicate"; "val"; "inductive"; "mutable";
         "for"; "to"; "downto"; "model";
 
