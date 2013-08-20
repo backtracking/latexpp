@@ -11,10 +11,22 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
       [
-	"class"; "extends"; "this"; "super"; "interface"; "implements";
+	(*
+        "class"; "extends"; "this"; "super"; "interface"; "implements";
 	"public"; "static"; "final"; "abstract"; "private"; "protected";
 	"throw"; "new"; "for"; "while"; "return"; "instanceof"; "if"; "else";
         "break"; "continue"; "switch";
+        *)
+        "abstract";	"continue";	"for";	"new";	"switch";
+        "assert";	"default";	"goto";	"package";	"synchronized";
+	"do";	"if";	"private";	"this";
+        "break";		"implements";	"protected";	"throw";
+	"else";	"import";	"public";	"throws";
+        "case";	"enum";	"instanceof";	"return";	"transient";
+        "catch";	"extends";			"try";
+	"final";	"interface";	"static";
+        "class";	"finally";		"strictfp";	"volatile";
+        "const";		"native";	"super";	"while";
       ];
     h
 
