@@ -18,7 +18,7 @@
     ]
 
   let x86_keyword = make_table
-    [ "mov"; "movq"; "call"; "ret"; "syscall"; "rep";
+    [ "mov"; "movl"; "movq"; "call"; "ret"; "syscall"; "rep";
       "xorb"; "andq"; "orq"; "notq"; "shlq"; "shrq";
       "addq"; "subq";
       "testq"; "jz"; "jmp";
@@ -50,7 +50,7 @@ rule pp fmt = parse
       }
   | latex_symbol as c
          { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
-  | ident as s ':'
+  | ('.'? ident) as s ':'
       { fprintf fmt "{\\color{red}"; print_ident fmt s;
 	fprintf fmt "\\symbol{58}}";
 	pp fmt lexbuf }
