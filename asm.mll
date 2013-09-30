@@ -1,5 +1,5 @@
 
-(* MIPS preprocessor *)
+(* Assembly preprocessor *)
 
 {
   open Lexing
@@ -18,7 +18,11 @@
     ]
 
   let x86_keyword = make_table
-    ["mov";]
+    [ "mov"; "movq"; "call"; "ret"; "syscall"; "rep";
+      "xorb"; "andq"; "orq"; "notq"; "shlq"; "shrq";
+      "addq"; "subq";
+      "testq"; "jz"; "jmp";
+      ]
 
   type asm = Mips | X86
   let asm = ref Mips
