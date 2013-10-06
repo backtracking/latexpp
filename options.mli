@@ -10,6 +10,7 @@ val env_mappings : command list
 val macro_mappings : command list
 
 val auto_spacing : bool
+val list_all: bool
 
 (* pp options *)
 

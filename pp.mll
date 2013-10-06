@@ -41,7 +41,8 @@
       exit 1
 
   let ppenvsopts = Hashtbl.create 17
-  let add_pp_envsopts s (f:(string -> unit) -> string list -> unit) = Hashtbl.add ppenvsopts s f
+  let add_pp_envsopts s (f:(string -> unit) -> string list -> unit) =
+    Hashtbl.add ppenvsopts s f
   let remove_envsopts = Hashtbl.remove ppenvsopts
 
   let map_envsopts m pp =
@@ -54,6 +55,15 @@
   let error l msg =
     eprintf "%s:%d: %s@." l.pos_fname l.pos_lnum msg;
     exit 1
+
+  let list_all () =
+    let listof h =
+      List.sort Pervasives.compare (Hashtbl.fold (fun s _ l -> s :: l) h []) in
+    printf "@[<hov 2>environments:";
+    List.iter (fun s -> printf "@\n%s" s) (listof ppenvs);
+    printf "@]@\n@[<hov 2>macros:";
+    List.iter (fun s -> printf "@\n%s" s) (listof ppmacros);
+    printf "@]@."
 
 }
 

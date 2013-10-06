@@ -14,3 +14,5 @@ val map_macro : string -> string -> unit
 val remove_macro : string -> unit
 
 val pp : Lexing.lexbuf -> unit
+
+val list_all: unit -> unit

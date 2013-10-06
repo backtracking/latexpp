@@ -54,7 +54,7 @@ CMO = version.cmo options.cmo util.cmo pp.cmo ocaml.cmo c.cmo \
       main.cmo
 CMX = $(CMO:.cmo=.cmx)
 
-GENERATED = version.ml pp.ml ocaml.ml tt.ml why.ml c.ml mips.ml java.ml \
+GENERATED = version.ml pp.ml ocaml.ml tt.ml why.ml c.ml asm.ml java.ml \
             pascal.ml math.ml
 
 byte: $(NAME).byte
