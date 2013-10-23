@@ -19,8 +19,9 @@ let indentation fmt n =
   let space = 0.5 *. (float n) in
   fprintf fmt "\n\\noindent\\hspace*{%2.2fem}" space
 
-let print_ident fmt =
+let print_ident ?(tt=false) fmt =
   let char = function
+    | '_' when tt -> pp_print_string fmt "\\symbol{95}"
     | '_' -> pp_print_string fmt "\\_{}"
     | c -> pp_print_char fmt c
   in

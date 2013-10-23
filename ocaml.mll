@@ -105,7 +105,7 @@ rule pp fmt = parse
 	  pp_print_string fmt s;
 	  fprintf fmt "}"
 	end else
-          print_ident fmt s;
+          print_ident ~tt:!is_tt fmt s;
 	pp fmt lexbuf
       }
   | "\n"
