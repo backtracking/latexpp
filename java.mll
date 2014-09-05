@@ -82,6 +82,10 @@ rule pp fmt = parse
   (* | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf } *)
   | "--" { fprintf fmt "{-{}-}"; pp fmt lexbuf }
   | '"' as c { pp_print_char fmt c; string fmt lexbuf; pp fmt lexbuf }
+  | ("@" ident) as p
+      { fprintf fmt "{%s%s}" (if color () then "\\color{red}" else "") p;
+	pp fmt lexbuf
+      }
   | "/*"
       {
 	fprintf fmt "{";
