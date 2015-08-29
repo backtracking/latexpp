@@ -79,7 +79,7 @@ rule pp fmt = parse
   | "(*"
       {
 	fprintf fmt "{";
-	if color () then fprintf fmt "\\color{red}";
+	if color () then fprintf fmt "\\color{ocamlcomment}";
 	pp_print_string fmt "(*"; comment fmt lexbuf;
 	fprintf fmt "}";
 	pp fmt lexbuf
@@ -100,7 +100,7 @@ rule pp fmt = parse
   | ident as s
       {
 	if is_set "keywords" && is_keyword s then begin
-	  if color () then fprintf fmt "{\\color{blue}"
+	  if color () then fprintf fmt "{\\color{ocamlkeyword}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
 	  fprintf fmt "}"
@@ -175,6 +175,8 @@ and start_of_line fmt = parse
   let ocaml_lightblue_tt = lightblue_box_tt ocaml
   let () = Pp.add_pp_environment "ocaml-lightblue-tt" ocaml_lightblue_tt
   let () = Pp.add_pp_environment "ocaml" ocaml_lightblue_tt
+
+  let () = Pp.add_pp_environment "ocaml-lightgray-tt" (lightgray_box_tt ocaml)
 
   let ocaml_sf =
     noindent_sf (fun fmt s -> is_tt := false; ocaml fmt s; is_tt := true)

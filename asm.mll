@@ -126,5 +126,6 @@ and start_of_line fmt = parse
   let x86_lightblue_tt = lightblue_box_tt x86
   let () = Pp.add_pp_environment "x86-lightblue-tt" x86_lightblue_tt
   let () = Pp.add_pp_environment "x86" x86_lightblue_tt
+  let () = Pp.add_pp_environment "x86-lightgray-tt" (lightgray_box_tt x86)
 }
 

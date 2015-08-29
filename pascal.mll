@@ -51,7 +51,7 @@ rule pp fmt = parse
   | "(*"
       {
 	fprintf fmt "{";
-	if color () then fprintf fmt "\\color{red}";
+	if color () then fprintf fmt "\\color{pascalcomment}";
 	pp_print_string fmt "(*"; comment fmt lexbuf;
 	fprintf fmt "}";
 	pp fmt lexbuf
@@ -59,7 +59,7 @@ rule pp fmt = parse
   | "{"
       {
 	fprintf fmt "{";
-	if color () then fprintf fmt "\\color{red}";
+	if color () then fprintf fmt "\\color{pascalcomment}";
 	pp_print_string fmt "\\symbol{123}"; comment fmt lexbuf;
 	fprintf fmt "}";
 	pp fmt lexbuf
@@ -67,12 +67,12 @@ rule pp fmt = parse
   | ident as s
       {
 	if is_keyword s then begin
-	  if color () then fprintf fmt "{\\color{blue}"
+	  if color () then fprintf fmt "{\\color{pascalkeyword}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
 	  fprintf fmt "}"
 	end else if is_type s then begin
-	  if color () then fprintf fmt "{\\definecolor{darkgreen}{rgb}{0,0.6,0}\\color{darkgreen}"
+	  if color () then fprintf fmt "{\\color{pascaltype}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
 	  fprintf fmt "}"
@@ -130,7 +130,8 @@ and start_of_line fmt = parse
   let pascal_lightblue_tt = lightblue_box_tt pascal
   let () =
     Pp.add_pp_environment "pascal-lightblue-tt" pascal_lightblue_tt;
-    Pp.add_pp_environment "pascal" pascal_lightblue_tt
+    Pp.add_pp_environment "pascal" pascal_lightblue_tt;
+    Pp.add_pp_environment "pascal-lightgray-tt" (lightgray_box_tt pascal)
 
 }
 

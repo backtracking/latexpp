@@ -45,13 +45,13 @@
   let color () = is_set "color"
 
   let print_green_ident fmt s =
-    fprintf fmt "{\\color{darkgreen}";
+    fprintf fmt "{\\color{javatype}";
     print_ident fmt s;
     fprintf fmt "}"
 
   let ident fmt s =
     if is_keyword s then begin
-      if color () then fprintf fmt "{\\color{blue}"
+      if color () then fprintf fmt "{\\color{javakeyword}"
       else fprintf fmt "\\textbf{";
       pp_print_string fmt s;
       fprintf fmt "}"
@@ -83,13 +83,14 @@ rule pp fmt = parse
   | "--" { fprintf fmt "{-{}-}"; pp fmt lexbuf }
   | '"' as c { pp_print_char fmt c; string fmt lexbuf; pp fmt lexbuf }
   | ("@" ident) as p
-      { fprintf fmt "{%s%s}" (if color () then "\\color{red}" else "") p;
+      { fprintf fmt "{%s%s}"
+          (if color () then "\\color{javacomment}" else "") p;
 	pp fmt lexbuf
       }
   | "/*"
       {
 	fprintf fmt "{";
-	if color () then fprintf fmt "\\color{red}";
+	if color () then fprintf fmt "\\color{javacomment}";
 	pp_print_string fmt "/*";
 	comment fmt lexbuf;
 	fprintf fmt "}";
@@ -98,7 +99,7 @@ rule pp fmt = parse
   | "//"
       {
 	fprintf fmt "{";
-	if color () then fprintf fmt "\\color{red}";
+	if color () then fprintf fmt "\\color{javacomment}";
 	pp_print_string fmt "//";
 	one_line_comment fmt lexbuf;
 	start_of_line fmt lexbuf;
@@ -212,6 +213,7 @@ and start_of_line fmt = parse
   let () = Pp.add_pp_environment "java-lightblue-tt" java_lightblue_tt
   let () = Pp.add_pp_environment "java-tt" java_tt
   let () = Pp.add_pp_environment "java" java_lightblue_tt
+  let () = Pp.add_pp_environment "java-lightgray-tt" (lightgray_box_tt java_tt)
 
   let texttt fmt s =
     fprintf fmt "\\texttt{";

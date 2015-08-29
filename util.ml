@@ -37,7 +37,7 @@ let vspacing_after () = match Options.find "vspacing_after" with
   | None -> vspacing ()
   | Some _ as s -> s
 
-let with_vspacing pp fmt s = 
+let with_vspacing pp fmt s =
   let print_sep = function
     | None -> ()
     | Some v -> fprintf fmt "\n\n%s\n" v
@@ -47,8 +47,8 @@ let with_vspacing pp fmt s =
   print_sep (vspacing_after ())
 
 let colorname_box_tt color pp fmt s =
-  fprintf fmt 
-    "\\colorbox{%s}{\\begin{minipage}{\\textwidth}\\ttfamily\\parindent 0pt\n" 
+  fprintf fmt
+    "\\colorbox{%s}{\\begin{minipage}{\\textwidth}\\ttfamily\\parindent 0pt\n"
     color;
   pp fmt s;
   fprintf fmt "\\end{minipage}}\n"
@@ -56,25 +56,26 @@ let colorname_box_tt color pp fmt s =
 let rgbcolor_box_tt r g b pp fmt s =
   fprintf fmt "{\\definecolor{tmpcolor}{rgb}{%.2f,%.2f,%.2f}\\colorbox{tmpcolor}{\\begin{minipage}{\\textwidth}\\ttfamily\\parindent 0pt\n" r g b;
   pp fmt s;
-  fprintf fmt "\\end{minipage}}}\n" 
+  fprintf fmt "\\end{minipage}}}\n"
 
 let lightgreen_box_tt pp = with_vspacing (rgbcolor_box_tt 0.6 1.0 0.6 pp)
 let lightblue_box_tt pp = with_vspacing (rgbcolor_box_tt 0.8 0.8 1.0 pp)
+let lightgray_box_tt pp = with_vspacing (rgbcolor_box_tt 0.9 0.9 0.9 pp)
 let lightred_box_tt pp = with_vspacing (rgbcolor_box_tt 1.0 0.8 0.8 pp)
 
-let noindent_tt pp = 
+let noindent_tt pp =
   with_vspacing (fun fmt s ->
     fprintf fmt "\n\n\\noindent{\\ttfamily\\parindent 0pt\n";
     pp fmt s;
     fprintf fmt "}\n")
 
-let noindent_sf pp = 
+let noindent_sf pp =
   with_vspacing (fun fmt s ->
     fprintf fmt "\n\n\\noindent{\\sffamily\\parindent 0pt\n";
     pp fmt s;
     fprintf fmt "}\n")
 
 let make_table l =
-  let h = Hashtbl.create 97 in 
+  let h = Hashtbl.create 97 in
   List.iter (fun s -> Hashtbl.add h s ()) l;
   Hashtbl.mem h
