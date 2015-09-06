@@ -36,7 +36,9 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
       [
-	"int"; "boolean"; "double"; "String"; "void";
+	"int"; "boolean"; "double"; "void"; "char"; "byte"; "short"; "long";
+        "float";
+        "String"; "Integer"; "Long"; "Char"; "Long"; "Byte"; "Short";
       ];
     h
 
