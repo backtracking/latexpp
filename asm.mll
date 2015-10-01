@@ -30,6 +30,8 @@
       "sal"; "salb"; "salw"; "sall"; "salq";
       "sar"; "sarb"; "sarw"; "sarl"; "sarq";
       "shr"; "shrb"; "shrw"; "shrl"; "shrq";
+      "rol"; "rolb"; "rolw"; "roll"; "rolq";
+      "ror"; "rorb"; "rorw"; "rorl"; "rorq";
       "add"; "addb"; "addw"; "addl"; "addq";
       "inc"; "incb"; "incw"; "incl"; "incq";
       "dec"; "decb"; "decw"; "decl"; "decq";
