@@ -18,10 +18,36 @@
     ]
 
   let x86_keyword = make_table
-    [ "mov"; "movl"; "movq"; "call"; "ret"; "syscall"; "rep";
-      "xorb"; "andq"; "orq"; "notq"; "shlq"; "shrq";
-      "addq"; "subq";
-      "testq"; "jz"; "jmp";
+    [ "mov"; "movb"; "movw"; "movl"; "movq";
+      "movs"; "movsbw"; "movsbl"; "movsbq"; "movswl"; "movswq"; "movslq";
+      "movz"; "movzbw"; "movzbl"; "movzbq"; "movzwl"; "movzwq"; "movzlq";
+      "movabsq";
+      "pushq"; "popq";
+      "xor"; "xorb"; "xorw"; "xorl"; "xorq";
+      "or"; "orb"; "orw"; "orl"; "orq";
+      "and"; "andb"; "andw"; "andl"; "andq";
+      "not"; "notb"; "notw"; "notl"; "notq";
+      "sal"; "salb"; "salw"; "sall"; "salq";
+      "sar"; "sarb"; "sarw"; "sarl"; "sarq";
+      "shr"; "shrb"; "shrw"; "shrl"; "shrq";
+      "add"; "addb"; "addw"; "addl"; "addq";
+      "inc"; "incb"; "incw"; "incl"; "incq";
+      "dec"; "decb"; "decw"; "decl"; "decq";
+      "sub"; "subb"; "subw"; "subl"; "subq";
+      "imul"; "imulb"; "imulw"; "imull"; "imulq";
+      "neg"; "negb"; "negw"; "negl"; "negq";
+      "lea"; "leab"; "leaw"; "leal"; "leaq";
+      "divq"; "idivq"; "cltd"; "cqto";
+      "call"; "ret"; "syscall"; "rep"; "leave";
+      "cmp"; "cmpb"; "cmpw"; "cmpl"; "cmpq";
+      "test"; "testb"; "testw"; "testl"; "testq";
+      "je"; "jne"; "js"; "jns"; "jg"; "jge";
+      "jl"; "jle"; "ja"; "jae"; "jb"; "jbe";
+      "jmp";
+      "sete"; "setne"; "sets"; "setns"; "setg"; "setge";
+      "setl"; "setle"; "seta"; "setae"; "setb"; "setbe";
+      "cmove"; "cmovne"; "cmovs"; "cmovns"; "cmovg"; "cmovge";
+      "cmovl"; "cmovle"; "cmova"; "cmovae"; "cmovb"; "cmovbe";
       ]
 
   type asm = Mips | X86
