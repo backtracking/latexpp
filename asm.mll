@@ -43,14 +43,15 @@
       "call"; "ret"; "syscall"; "rep"; "leave";
       "cmp"; "cmpb"; "cmpw"; "cmpl"; "cmpq";
       "test"; "testb"; "testw"; "testl"; "testq";
-      "je"; "jne"; "js"; "jns"; "jg"; "jge";
+      "je"; "jz"; "jne"; "jnz"; "js"; "jns"; "jg"; "jge";
       "jl"; "jle"; "ja"; "jae"; "jb"; "jbe";
       "jmp";
-      "sete"; "setne"; "sets"; "setns"; "setg"; "setge";
+      "sete"; "setz"; "setne"; "setnz"; "sets"; "setns"; "setg"; "setge";
       "setl"; "setle"; "seta"; "setae"; "setb"; "setbe";
-      "cmove"; "cmovne"; "cmovs"; "cmovns"; "cmovg"; "cmovge";
+      "cmove"; "cmovz"; "cmovne"; "cmovnz";
+      "cmovs"; "cmovns"; "cmovg"; "cmovge";
       "cmovl"; "cmovle"; "cmova"; "cmovae"; "cmovb"; "cmovbe";
-      ]
+    ]
 
   type asm = Mips | X86
   let asm = ref Mips
