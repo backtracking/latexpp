@@ -75,6 +75,7 @@ let space = [' ' '\t']
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']*
 
 rule pp fmt = parse
+  | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; pp fmt lexbuf }
   | '{'  { fprintf fmt "\\symbol{123}"; pp fmt lexbuf }
   | '}'  { fprintf fmt "\\symbol{125}"; pp fmt lexbuf }
   | '#' { fprintf fmt "\\#{}"; pp fmt lexbuf }
@@ -118,7 +119,7 @@ rule pp fmt = parse
   | "/*"
       {
 	fprintf fmt "\\emph{";
-	if color () then fprintf fmt "\\color{red}";
+	if color () then fprintf fmt "\\color{ccomment}";
 	pp_print_string fmt "/*"; comment fmt lexbuf;
 	fprintf fmt "}";
 	pp fmt lexbuf
@@ -126,7 +127,7 @@ rule pp fmt = parse
   | "//"
       {
 	fprintf fmt "\\emph{";
-	if color () then fprintf fmt "\\color{red}";
+	if color () then fprintf fmt "\\color{ccomment}";
 	pp_print_string fmt "//"; one_line_comment fmt lexbuf;
 	fprintf fmt "}\\linebreak"; start_of_line fmt lexbuf;
 	pp fmt lexbuf
@@ -134,12 +135,12 @@ rule pp fmt = parse
   | ident as s
       {
 	if is_keyword s then begin
-	  if color () then fprintf fmt "{\\color{blue}"
+	  if color () then fprintf fmt "{\\color{ckeyword}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
 	  fprintf fmt "}"
 	end else if is_type s then begin
-	  if color () then fprintf fmt "{\\color{darkgreen}"
+	  if color () then fprintf fmt "{\\color{ctype}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
 	  fprintf fmt "}"
@@ -236,13 +237,13 @@ and framac fmt = parse
         let print_backslach ()=
           if b = "\\" then pp_print_string fmt "\\symbol{92}" in
 	if is_framac_keyword s then begin
-	  if color () then fprintf fmt "{\\color{blue}"
+	  if color () then fprintf fmt "{\\color{ckeyword}"
 	  else fprintf fmt "\\textbf{";
           print_backslach ();
 	  pp_print_string fmt s;
 	  fprintf fmt "}"
 	end else if is_type s then begin
-	  if color () then fprintf fmt "{\\color{darkgreen}"
+	  if color () then fprintf fmt "{\\color{ctype}"
 	  else fprintf fmt "\\textbf{";
           print_backslach ();
 	  pp_print_string fmt s;
@@ -305,8 +306,9 @@ and start_of_line fmt = parse
   let () = Pp.add_pp_environment "c" c_tt
 
   let lightblue_c_tt = lightblue_box_tt c
-
   let () = Pp.add_pp_environment "lightblue-c" lightblue_c_tt
+  let lightgray_c_tt = lightgray_box_tt c
+  let () = Pp.add_pp_environment "lightgray-c" lightgray_c_tt
 
   let c_sf =
     noindent_sf (fun fmt s -> tt := false; c fmt s; tt := true)
