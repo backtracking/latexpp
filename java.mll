@@ -60,7 +60,7 @@
     end else if is_type s && color () then
       print_green_ident fmt s
     else
-      print_ident fmt s
+      print_ident ~tt:true fmt s
 
 }
 
@@ -70,7 +70,7 @@ let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']*
 rule pp fmt = parse
   | '{'  { fprintf fmt "\\symbol{123}"; pp fmt lexbuf }
   | '}'  { fprintf fmt "\\symbol{125}"; pp fmt lexbuf }
-  | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
+  | '_'  { fprintf fmt "\\symbol{95}"; pp fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
   | '$'  { fprintf fmt "\\${}"; pp fmt lexbuf }
