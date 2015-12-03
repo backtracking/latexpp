@@ -197,9 +197,9 @@ and string fmt = parse
 	indentation fmt (count_spaces s);
 	string fmt lexbuf }
   | '\\' '"'
-      { fprintf fmt "\\ensuremath{\\backslash}\""; string fmt lexbuf }
+      { fprintf fmt "\\symbol{92}\""; string fmt lexbuf }
   | '\\'
-      { fprintf fmt "\\ensuremath{\\backslash}"; string fmt lexbuf }
+      { fprintf fmt "\\symbol{92}"; string fmt lexbuf }
   | '{'  { fprintf fmt "\\{"; string fmt lexbuf }
   | '}'  { fprintf fmt "\\}"; string fmt lexbuf }
   | '$' { fprintf fmt "\\${}"; string fmt lexbuf }
