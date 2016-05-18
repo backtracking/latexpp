@@ -15,7 +15,7 @@
 	"use"; "import"; "clone"; "export"; "namespace"; "as"; "theory";
 	"goal"; "lemma"; "module";
 
-        "reads"; "writes"; "raises";
+        "reads"; "writes"; "raises"; "diverges";
 
         "constant";
         "function"; "predicate"; "val"; "inductive"; "mutable";
