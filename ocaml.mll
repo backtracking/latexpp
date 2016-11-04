@@ -182,9 +182,12 @@ and start_of_line fmt = parse
     noindent_sf (fun fmt s -> is_tt := false; ocaml fmt s; is_tt := true)
   let () = Pp.add_pp_environment "ocaml-sf" ocaml_sf
 
+  let ocamllex_tt =
+    noindent_tt (fun fmt -> with_options ["ocamllex","yes"] (ocaml fmt))
+  let () = Pp.add_pp_environment "ocamllex" ocamllex_tt
   let ocamllex_lightgray_tt =
     lightgray_box_tt (fun fmt -> with_options ["ocamllex","yes"] (ocaml fmt))
-  let () = Pp.add_pp_environment "ocamllex" ocamllex_lightgray_tt
+  let () = Pp.add_pp_environment "ocamllex-lightgray-tt" ocamllex_lightgray_tt
 
   let pseudocode_lightgray_tt =
     lightgray_box_tt (fun fmt -> with_options ["keywords","no"] (ocaml fmt))
