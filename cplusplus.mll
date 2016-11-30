@@ -237,12 +237,19 @@ and start_of_line fmt = parse
   let c_tt =
     noindent_tt (fun fmt s -> tt := true; c fmt s; tt := false)
 
+  let c_tt fmt s =
+    fprintf fmt "\\begin{flushleft}\\ttfamily\\parindent 0pt\n";
+    let lb = from_string s in
+    start_of_line fmt lb; pp fmt lb;
+    fprintf fmt "\\end{flushleft}%%\n"
+
   let () = Pp.add_pp_environment "c++-tt" c_tt
   let () = Pp.add_pp_environment "c++" c_tt
 
   let lightblue_c_tt = lightblue_box_tt c
-
   let () = Pp.add_pp_environment "lightblue-c++" lightblue_c_tt
+  let () = Pp.add_pp_environment "c++-lightblue-tt" lightblue_c_tt
+  let () = Pp.add_pp_environment "c++-lightgray-tt" (lightgray_box_tt c_tt)
 
   let c_sf =
     noindent_sf (fun fmt s -> tt := false; c fmt s; tt := true)
