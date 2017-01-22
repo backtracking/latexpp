@@ -109,6 +109,7 @@ rule pp fmt = parse
       }
   | ident as s
       { ident fmt s; pp fmt lexbuf }
+(*
   | (ident as id1) (space+ as s) (ident as id2)
       { begin
 	  if is_keyword id1 || is_keyword id2 || not (color ()) then begin
@@ -118,6 +119,7 @@ rule pp fmt = parse
 	  end
 	end;
 	pp fmt lexbuf }
+*)
   | "\n" (space* as s)
       { fprintf fmt "~\\linebreak";
 	indentation fmt (count_spaces s);
