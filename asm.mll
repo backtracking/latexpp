@@ -71,7 +71,7 @@ rule pp fmt = parse
   | "#"
       {
 	fprintf fmt "{";
-	if color () then fprintf fmt "\\color{red}";
+	if color () then fprintf fmt "\\color{asmcomment}";
 	pp_print_string fmt "\\symbol{35}";
 	one_line_comment fmt lexbuf;
 	start_of_line fmt lexbuf;
@@ -80,12 +80,12 @@ rule pp fmt = parse
   | latex_symbol as c
          { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
   | ('.'? ident) as s ':'
-      { fprintf fmt "{\\color{red}"; print_ident fmt s;
+      { fprintf fmt "{\\color{asmlabel}"; print_ident fmt s;
 	fprintf fmt "\\symbol{58}}";
 	pp fmt lexbuf }
   | ' '  { fprintf fmt "~"; pp fmt lexbuf }
   | ('.' ident) as s
-      { if color () then fprintf fmt "{\\color{violet}"
+      { if color () then fprintf fmt "{\\color{asmdirective}"
 	else fprintf fmt "\\textbf{";
 	print_ident fmt s;
 	fprintf fmt "}";
@@ -93,7 +93,7 @@ rule pp fmt = parse
       }
   | ident as s
       { if is_keyword s then begin
-	  if color () then fprintf fmt "{\\color{blue}"
+	  if color () then fprintf fmt "{\\color{asmkeyword}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
 	  fprintf fmt "}"
