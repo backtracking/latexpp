@@ -12,6 +12,9 @@ val macro_mappings : command list
 val auto_spacing : bool
 val list_all: bool
 
+val reset_line_number: unit -> unit
+val newline: Format.formatter -> unit
+
 (* pp options *)
 
 val add : string -> string -> unit

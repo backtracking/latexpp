@@ -6,7 +6,11 @@ open Arg
 
 let opt = Hashtbl.create 97
 
-let add o v = Hashtbl.add opt o v
+let line = ref 0
+
+let add o v =
+  if o = "line" then (try line := int_of_string v with _ -> ())
+  else Hashtbl.add opt o v
 
 let remove = Hashtbl.remove opt
 
@@ -27,6 +31,18 @@ let with_options ol f x =
 let () = add "vspacing" "\\medskip\\noindent"
 let () = add "color" "yes"
 let () = add "keywords" "yes"
+
+let reset_line_number () =
+  line := 0
+let newline fmt =
+  incr line;
+  if is_set "linenumbers" then begin
+    let s = string_of_int !line in
+    let n = String.length s in
+    fprintf fmt "{\\rmfamily\\tiny";
+    for i = 1 to 3 - n do fprintf fmt "\\hspace*{1ex}" done;
+    fprintf fmt "{%s}}" s
+  end
 
 (* command line options *)
 

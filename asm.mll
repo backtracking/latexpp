@@ -60,6 +60,7 @@
     | X86  -> x86_keyword  x
 
   let color () = is_set "color"
+
 }
 
 let space = [' ' '\t']
@@ -102,7 +103,7 @@ rule pp fmt = parse
 	pp fmt lexbuf
       }
   | "\n" (space* as s)
-      { fprintf fmt "~\\linebreak";
+      { fprintf fmt "~\\linebreak"; newline fmt;
 	indentation fmt (count_spaces s);
 	pp fmt lexbuf }
   | "\n" space* eof
@@ -113,7 +114,7 @@ rule pp fmt = parse
       { pp_print_char fmt c; pp fmt lexbuf }
 
 and one_line_comment fmt = parse
-  | "\n" { fprintf fmt "}~\\linebreak" }
+  | "\n" { fprintf fmt "}~\\linebreak"; newline fmt }
   | latex_symbol as c
          { fprintf fmt "\\symbol{%d}" (Char.code c);
 	   one_line_comment fmt lexbuf }
@@ -132,9 +133,12 @@ and start_of_line fmt = parse
 
   (* MIPS *)
 
+  let start fmt lb =
+    newline fmt; start_of_line fmt lb; pp fmt lb; reset_line_number ()
+
   let mips fmt s =
     asm := Mips;
-    let lb = from_string s in start_of_line fmt lb; pp fmt lb
+    start fmt (from_string s)
 
   let mips_tt = noindent_tt mips
   let () = Pp.add_pp_environment "mips-tt" mips_tt
@@ -147,7 +151,7 @@ and start_of_line fmt = parse
 
   let x86 fmt s =
     asm := X86;
-    let lb = from_string s in start_of_line fmt lb; pp fmt lb
+    start fmt (from_string s)
 
   let x86_tt = noindent_tt x86
   let () = Pp.add_pp_environment "x86-tt" x86_tt
