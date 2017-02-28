@@ -34,9 +34,9 @@ let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']*
 
 rule pp fmt = parse
   | '_'  { if !is_tt then fprintf fmt "\\symbol{95}"
-    else fprintf fmt "\\_{}"; pp fmt lexbuf }
+           else fprintf fmt "\\_{}"; pp fmt lexbuf }
   | '|'  { if !is_tt then fprintf fmt "\\symbol{124}"
-    else fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
+           else fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
   | latex_symbol as c
          { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
   | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; pp fmt lexbuf }
@@ -44,38 +44,6 @@ rule pp fmt = parse
 	   pp fmt lexbuf }
   | '}'  { if !is_tt then fprintf fmt "\\symbol{125}" else fprintf fmt "\\}";
 	   pp fmt lexbuf }
-(*
-  | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
-  | "<-" { fprintf fmt "\\ensuremath{\\leftarrow}"; pp fmt lexbuf }
-  | ">"  { if !is_tt then fprintf fmt ">" else fprintf fmt "\\ensuremath{>}";
-           pp fmt lexbuf }
-  | "<"  { if !is_tt then fprintf fmt "<" else fprintf fmt "\\ensuremath{<}";
-           pp fmt lexbuf }
-  | ">=" { if !is_tt then fprintf fmt ">="
-           else fprintf fmt "\\ensuremath{\\ge}";
-           pp fmt lexbuf }
-  | "<=" { if !is_tt then fprintf fmt "<="
-           else fprintf fmt "\\ensuremath{\\le}";
-           pp fmt lexbuf }
-*)
-
-(*   | "&&" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf } *)
-(*   | "||" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf } *)
-
-(*
-  | "==" { fprintf fmt "\\ensuremath{\\equiv}"; pp fmt lexbuf }
-  | ":=" { if !is_tt then fprintf fmt ":=" else fprintf fmt "\\ensuremath{:=}";
-           pp fmt lexbuf }
-  | "!=" { fprintf fmt "\\ensuremath{\\not\\equiv}"; pp fmt lexbuf }
-  | "<>" { fprintf fmt "\\ensuremath{\\not=}"; pp fmt lexbuf }
-  | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
-  | "'b" { fprintf fmt "\\ensuremath{\\beta}"; pp fmt lexbuf }
-  | "'c" { fprintf fmt "\\ensuremath{\\gamma}"; pp fmt lexbuf }
-  | "*" as c
-      { if is_set "ocamllex" then pp_print_char fmt c
-	else fprintf fmt "\\ensuremath{\\times}";
-	pp fmt lexbuf }
-*)
   | "(*"
       {
 	fprintf fmt "{";
@@ -89,7 +57,7 @@ rule pp fmt = parse
       { pp_print_char fmt c; string fmt lexbuf; pp fmt lexbuf }
   (* characters *)
   | "'" (latex_symbol as c) "'"
-         { fprintf fmt "'\\symbol{%d}'" (Char.code c); pp fmt lexbuf }
+      { fprintf fmt "'\\symbol{%d}'" (Char.code c); pp fmt lexbuf }
   | "'" _ "'" as s
       { pp_print_string fmt s; pp fmt lexbuf }
   | "'\\\\'"
@@ -98,8 +66,7 @@ rule pp fmt = parse
       { pp_print_string fmt "'\\symbol{92}"; pp_print_string fmt s;
 	pp_print_string fmt "'"; pp fmt lexbuf }
   | ident as s
-      {
-	if is_set "keywords" && is_keyword s then begin
+      { if is_set "keywords" && is_keyword s then begin
 	  if color () then fprintf fmt "{\\color{ocamlkeyword}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;

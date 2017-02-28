@@ -90,6 +90,7 @@ rule pp fmt = parse
 	   pp fmt lexbuf }
   | '<'  { fprintf fmt "\\symbol{60}"; pp fmt lexbuf }
   | '>'  { fprintf fmt "\\symbol{62}"; pp fmt lexbuf }
+(*
   | ">=" { if !tt then fprintf fmt ">=" else fprintf fmt "\\ensuremath{\\ge}";
 	   pp fmt lexbuf }
   | "<=" { if !tt then fprintf fmt "<=" else fprintf fmt "\\ensuremath{\\le}";
@@ -100,7 +101,6 @@ rule pp fmt = parse
   | "!="
   { if !tt then fprintf fmt "!=" else fprintf fmt "\\ensuremath{\\not\\equiv}";
     pp fmt lexbuf }
-(*
   | "|" { fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
   | ">" { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
   | "<" { fprintf fmt "\\ensuremath{<}"; pp fmt lexbuf }
