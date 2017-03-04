@@ -117,7 +117,7 @@ rule pp fmt = parse
       }
   | "/*"
       {
-	fprintf fmt "\\emph{";
+	fprintf fmt "{";
 	if color () then fprintf fmt "\\color{ccomment}";
 	pp_print_string fmt "/*"; comment fmt lexbuf;
 	fprintf fmt "}";
@@ -125,7 +125,7 @@ rule pp fmt = parse
       }
   | "//"
       {
-	fprintf fmt "\\emph{";
+	fprintf fmt "{";
 	if color () then fprintf fmt "\\color{ccomment}";
 	pp_print_string fmt "//"; one_line_comment fmt lexbuf;
 	fprintf fmt "}\\linebreak"; start_of_line fmt lexbuf;
@@ -305,9 +305,9 @@ and start_of_line fmt = parse
   let () = Pp.add_pp_environment "c" c_tt
 
   let lightblue_c_tt = lightblue_box_tt c
-  let () = Pp.add_pp_environment "lightblue-c" lightblue_c_tt
+  let () = Pp.add_pp_environment "c-lightblue-tt" lightblue_c_tt
   let lightgray_c_tt = lightgray_box_tt c
-  let () = Pp.add_pp_environment "lightgray-c" lightgray_c_tt
+  let () = Pp.add_pp_environment "c-lightgray-tt" lightgray_c_tt
 
   let c_sf =
     noindent_sf (fun fmt s -> tt := false; c fmt s; tt := true)
