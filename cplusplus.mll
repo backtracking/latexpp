@@ -93,20 +93,18 @@ rule pp fmt = parse
   | '\\'  { fprintf fmt "\\symbol{92}"; pp fmt lexbuf }
   | "--" { if !tt then fprintf fmt "--" else fprintf fmt "\\ensuremath{-{}-}";
 	   pp fmt lexbuf }
-  | ">" { if !tt then fprintf fmt ">" else fprintf fmt "\\ensuremath{>}";
-	  pp fmt lexbuf }
-  | "<" { if !tt then fprintf fmt "<" else fprintf fmt "\\ensuremath{<}";
-	  pp fmt lexbuf }
-  | ">=" { if !tt then fprintf fmt ">=" else fprintf fmt "\\ensuremath{\\ge}";
-	   pp fmt lexbuf }
-  | "<=" { if !tt then fprintf fmt "<=" else fprintf fmt "\\ensuremath{\\le}";
-	   pp fmt lexbuf }
-  | "=="
-      { if !tt then fprintf fmt "==" else fprintf fmt "\\ensuremath{\\equiv}";
-	pp fmt lexbuf }
-  | "!="
-  { if !tt then fprintf fmt "!=" else fprintf fmt "\\ensuremath{\\not\\equiv}";
-    pp fmt lexbuf }
+  | '<'  { fprintf fmt "\\symbol{60}"; pp fmt lexbuf }
+  | '>'  { fprintf fmt "\\symbol{62}"; pp fmt lexbuf }
+  (* | ">=" { if !tt then fprintf fmt ">=" else fprintf fmt "\\ensuremath{\\ge}"; *)
+  (*          pp fmt lexbuf } *)
+  (* | "<=" { if !tt then fprintf fmt "<=" else fprintf fmt "\\ensuremath{\\le}"; *)
+  (*          pp fmt lexbuf } *)
+  (* | "==" *)
+  (*     { if !tt then fprintf fmt "==" else fprintf fmt "\\ensuremath{\\equiv}"; *)
+  (*       pp fmt lexbuf } *)
+  (* | "!=" *)
+  (* { if !tt then fprintf fmt "!=" else fprintf fmt "\\ensuremath{\\not\\equiv}"; *)
+  (*   pp fmt lexbuf } *)
   | '"' as c { pp_print_char fmt c; string fmt lexbuf; pp fmt lexbuf }
   | "/*"
       {
