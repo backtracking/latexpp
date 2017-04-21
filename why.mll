@@ -89,12 +89,24 @@ rule pp fmt = parse
   | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; pp fmt lexbuf }
   | "{|" { fprintf fmt "\\{|"; pp fmt lexbuf }
   | "|}" { fprintf fmt "|\\}"; pp fmt lexbuf }
-  | '{'  { if color () then fprintf fmt "{\\color{colorspec}";
+  | '{'  { fprintf fmt "\\symbol{123}"; pp fmt lexbuf }
+  | '}'  { fprintf fmt "\\symbol{125}"; pp fmt lexbuf }
+  | '_'  { fprintf fmt "\\symbol{95}"; pp fmt lexbuf }
+(*
+  | '{'  { (* if color () then fprintf fmt "{\\color{colorspec}"; *)
 	   inside_annotation := true;
 	   fprintf fmt "\\{"; pp fmt lexbuf }
   | '}'  { fprintf fmt "\\}";
 	   inside_annotation := false;
-	   if color () then fprintf fmt "}"; pp fmt lexbuf }
+	   (* if color () then fprintf fmt "}"; *)
+           pp fmt lexbuf }
+*)
+  | '\\'  { fprintf fmt "\\symbol{92}"; pp fmt lexbuf }
+  | '^'  { fprintf fmt "\\symbol{94}"; pp fmt lexbuf }
+  | '<'  { fprintf fmt "\\symbol{60}"; pp fmt lexbuf }
+  | '>'  { fprintf fmt "\\symbol{62}"; pp fmt lexbuf }
+  | "--" { fprintf fmt "{-{}-}"; pp fmt lexbuf }
+(*
   | "--" { fprintf fmt "\\ensuremath{-{}-}"; pp fmt lexbuf }
 
   | "->" { fprintf fmt "\\ensuremath{\\rightarrow}"; pp fmt lexbuf }
@@ -105,15 +117,15 @@ rule pp fmt = parse
   | ">" { fprintf fmt "\\ensuremath{>}"; pp fmt lexbuf }
   | "<=" { fprintf fmt "\\ensuremath{\\le}"; pp fmt lexbuf }
   | ">=" { fprintf fmt "\\ensuremath{\\ge}"; pp fmt lexbuf }
-  | "=" { fprintf fmt "\\ensuremath{=}"; pp fmt lexbuf }
   | "<>" { fprintf fmt "\\ensuremath{\\not=}"; pp fmt lexbuf }
   | "forall" { fprintf fmt "\\ensuremath{\\forall\\!}"; pp fmt lexbuf }
   | "exists" { fprintf fmt "\\ensuremath{\\exists\\!}"; pp fmt lexbuf }
   | "/\\" { fprintf fmt "\\ensuremath{\\land}"; pp fmt lexbuf }
   | "\\/" { fprintf fmt "\\ensuremath{\\lor}"; pp fmt lexbuf }
-  | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf }
-  | "'b" { fprintf fmt "\\ensuremath{\\beta}"; pp fmt lexbuf }
-  | "'c" { fprintf fmt "\\ensuremath{\\gamma}"; pp fmt lexbuf }
+*)
+  (* | "'a" { fprintf fmt "\\ensuremath{\\alpha}"; pp fmt lexbuf } *)
+  (* | "'b" { fprintf fmt "\\ensuremath{\\beta}"; pp fmt lexbuf } *)
+  (* | "'c" { fprintf fmt "\\ensuremath{\\gamma}"; pp fmt lexbuf } *)
   | "(*)" { fprintf fmt "(*)"; pp fmt lexbuf }
   | "(*"
       {

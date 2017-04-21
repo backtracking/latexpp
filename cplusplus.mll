@@ -80,17 +80,16 @@
 
 let space = [' ' '\t']
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']*
+let latex_symbol =
+  '\\' | '#' | '$' | ':' | '_' | '%' | '~' | ';' | '&' | '^'
 
 rule pp fmt = parse
   | '{'  { fprintf fmt "\\symbol{123}"; pp fmt lexbuf }
   | '}'  { fprintf fmt "\\symbol{125}"; pp fmt lexbuf }
-  | '#' { fprintf fmt "\\#{}"; pp fmt lexbuf }
-  | '_'  { fprintf fmt "\\_{}"; pp fmt lexbuf }
-  | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
+  | latex_symbol as c
+         { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
+  | ' '  { pp_print_string fmt "\\hspace*{1.20ex}"; pp fmt lexbuf }
   (* | ':'  { fprintf fmt "\\ensuremath{\\colon}"; pp fmt lexbuf } *)
-  | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
-  | '~'  { fprintf fmt "\\symbol{126}"; pp fmt lexbuf }
-  | '\\'  { fprintf fmt "\\symbol{92}"; pp fmt lexbuf }
   | "--" { if !tt then fprintf fmt "--" else fprintf fmt "\\ensuremath{-{}-}";
 	   pp fmt lexbuf }
   | '<'  { fprintf fmt "\\symbol{60}"; pp fmt lexbuf }
