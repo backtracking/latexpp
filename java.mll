@@ -38,7 +38,8 @@
       [
 	"int"; "boolean"; "double"; "void"; "char"; "byte"; "short"; "long";
         "float";
-        "String"; "Integer"; "Long"; "Char"; "Long"; "Byte"; "Short";
+        (* "String"; "Integer"; "Char"; "Long"; "Byte"; "Short"; *)
+        (* "Double"; "Boolean"; "Void"; *)
       ];
     h
 

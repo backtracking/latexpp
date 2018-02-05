@@ -61,13 +61,13 @@
   let tt = ref true
 
   let print_green_ident fmt s =
-    fprintf fmt "{\\color{darkgreen}";
+    fprintf fmt "{\\color{cpptype}";
     print_ident fmt s;
     fprintf fmt "}"
 
   let ident fmt s =
     if is_keyword s then begin
-      if color () then fprintf fmt "{\\color{blue}"
+      if color () then fprintf fmt "{\\color{cppkeyword}"
       else fprintf fmt "\\textbf{";
       pp_print_string fmt s;
       fprintf fmt "}"
@@ -108,7 +108,7 @@ rule pp fmt = parse
   | "/*"
       {
 	fprintf fmt "\\emph{";
-	if color () then fprintf fmt "\\color{red}";
+	if color () then fprintf fmt "\\color{cppcomment}";
 	pp_print_string fmt "/*"; comment fmt lexbuf;
 	fprintf fmt "}";
 	pp fmt lexbuf
@@ -116,7 +116,7 @@ rule pp fmt = parse
   | "//"
       {
 	fprintf fmt "\\emph{";
-	if color () then fprintf fmt "\\color{red}";
+	if color () then fprintf fmt "\\color{cppcomment}";
 	pp_print_string fmt "//"; one_line_comment fmt lexbuf;
 	fprintf fmt "}\\linebreak"; start_of_line fmt lexbuf;
 	pp fmt lexbuf

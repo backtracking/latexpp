@@ -10,7 +10,7 @@
   let is_keyword = make_table
     [
       "if"; "then"; "else"; "while"; "do"; "program"; "procedure";
-      "begin"; "end"; "record";
+      "begin"; "end"; "record"; "forward";
     ]
 
   let is_type = make_table
@@ -131,7 +131,7 @@ and start_of_line fmt = parse
   let () =
     Pp.add_pp_environment "pascal-lightblue-tt" pascal_lightblue_tt;
     Pp.add_pp_environment "pascal" pascal_lightblue_tt;
-    Pp.add_pp_environment "pascal-lightgray-tt" (lightgray_box_tt pascal)
+    Pp.add_pp_environment "pascal-lightgray-tt" (lightgray_box_tt pascal_tt)
 
 }
 
