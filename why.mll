@@ -16,10 +16,11 @@
 	"goal"; "lemma"; "module";
 
         "reads"; "writes"; "raises"; "diverges";
+        "old";
 
         "constant";
         "function"; "predicate"; "val"; "inductive"; "mutable";
-        "for"; "to"; "downto"; "model";
+        "for"; "to"; "downto"; "model"; "private";
 
 	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in"; "rec";
 	"assert"; "begin"; "end"; "try"; "with"; "raise"; "and";
@@ -202,6 +203,7 @@ and start_of_line fmt = parse
 
   let () = Pp.add_pp_environment "why-tt" why_tt
   let () = Pp.add_pp_environment "why" why_tt
+  let () = Pp.add_pp_environment "why-lightgray-tt" (lightgray_box_tt why_tt)
 
   let why_sf =
     noindent_sf (fun fmt s -> is_tt := false; why fmt s; is_tt := true)
