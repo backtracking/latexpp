@@ -13,7 +13,7 @@
       [
 	"logic"; "axiom"; "parameter"; "predicate"; "type"; "exception";
 	"use"; "import"; "clone"; "export"; "namespace"; "as"; "theory";
-	"goal"; "lemma"; "module";
+	"goal"; "lemma"; "module"; "meta"; "syntax";
 
         "reads"; "writes"; "raises"; "diverges";
         "old";
