@@ -26,6 +26,7 @@
 	"assert"; "begin"; "end"; "try"; "with"; "raise"; "and";
 	"invariant"; "variant"; "match"; "any"; "ghost";
         "requires"; "ensures"; "returns";
+        "break"; "continue"; "return";
       ];
     h
 
