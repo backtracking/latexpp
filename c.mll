@@ -15,6 +15,7 @@
         "return";
         "register"; "break"; "continue"; "goto";
         "static"; "const";
+        "typedef";
       ];
     h
 

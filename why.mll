@@ -27,6 +27,8 @@
 	"invariant"; "variant"; "match"; "any"; "ghost";
         "requires"; "ensures"; "returns";
         "break"; "continue"; "return";
+
+        "ref"
       ];
     h
 

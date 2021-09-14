@@ -53,11 +53,21 @@
       "cmovl"; "cmovle"; "cmova"; "cmovae"; "cmovb"; "cmovbe";
     ]
 
-  type asm = Mips | X86
+  let llvm_keyword = make_table
+    [ "define"; "icmp"; "br"; "phi"; "add"; "mul"; "ret";
+      "call"; "tail"; ]
+  let llvm_type = make_table
+    [ "i1"; "i32"; "i64"; "label"]
+
+  type asm = Mips | X86 | LLVM
   let asm = ref Mips
   let is_keyword x = match !asm with
     | Mips -> mips_keyword x
     | X86  -> x86_keyword  x
+    | LLVM  -> llvm_keyword  x
+  let is_type x = match !asm with
+    | Mips | X86 -> false
+    | LLVM  -> llvm_type  x
 
   let color () = is_set "color"
 
@@ -69,11 +79,11 @@ let latex_symbol =
   '\\' | '#' | '$' | ':' | '_' | '%' | '~' | ';' | '&' | '^' | '{' | '}'
 
 rule pp fmt = parse
-  | "#"
+  | "#" | ";" as s
       {
 	fprintf fmt "{";
 	if color () then fprintf fmt "\\color{asmcomment}";
-	pp_print_string fmt "\\symbol{35}";
+	pp_print_string fmt (if s = '#' then "\\symbol{35}" else ";");
 	one_line_comment fmt lexbuf;
 	start_of_line fmt lexbuf;
 	pp fmt lexbuf
@@ -95,6 +105,11 @@ rule pp fmt = parse
   | ident as s
       { if is_keyword s then begin
 	  if color () then fprintf fmt "{\\color{asmkeyword}"
+	  else fprintf fmt "\\textbf{";
+	  pp_print_string fmt s;
+	  fprintf fmt "}"
+	end else if is_type s then begin
+	  if color () then fprintf fmt "{\\color{asmtype}"
 	  else fprintf fmt "\\textbf{";
 	  pp_print_string fmt s;
 	  fprintf fmt "}"
@@ -160,5 +175,19 @@ and start_of_line fmt = parse
   let () = Pp.add_pp_environment "x86-lightblue-tt" x86_lightblue_tt
   let () = Pp.add_pp_environment "x86" x86_lightblue_tt
   let () = Pp.add_pp_environment "x86-lightgray-tt" (lightgray_box_tt x86)
+
+  (* LLVM *)
+
+  let llvm fmt s =
+    asm := LLVM;
+    start fmt (from_string s)
+
+  let llvm_tt = noindent_tt llvm
+  let () = Pp.add_pp_environment "llvm-tt" llvm_tt
+
+  let llvm_lightblue_tt = lightblue_box_tt llvm
+  let () = Pp.add_pp_environment "llvm-lightblue-tt" llvm_lightblue_tt
+  let () = Pp.add_pp_environment "llvm" llvm_lightblue_tt
+  let () = Pp.add_pp_environment "llvm-lightgray-tt" (lightgray_box_tt llvm)
 }
 
