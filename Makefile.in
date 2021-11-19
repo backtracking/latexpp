@@ -50,7 +50,8 @@ all: $(OCAMLBEST)
 
 CMO = version.cmo options.cmo util.cmo pp.cmo ocaml.cmo c.cmo \
       cplusplus.cmo why.cmo tt.cmo \
-      asm.cmo pascal.cmo java.cmo mlpost_pp.cmo metapost.cmo math.cmo \
+      asm.cmo pascal.cmo java.cmo python.cmo \
+      mlpost_pp.cmo metapost.cmo math.cmo \
       main.cmo
 CMX = $(CMO:.cmo=.cmx)
 
