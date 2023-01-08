@@ -13,7 +13,7 @@
       ["def"; "if"; "else";
        "return";
        "for"; "in";
-       "and"; "or"; "not";
+       "and"; "or"; "not"; "while";
        "True";
        "False";
        "None";

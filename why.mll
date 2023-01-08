@@ -11,6 +11,7 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
       [
+        "absurd";
 	"logic"; "axiom"; "parameter"; "predicate"; "type"; "exception";
 	"use"; "import"; "clone"; "export"; "namespace"; "as"; "theory";
 	"goal"; "lemma"; "module"; "meta"; "syntax";

@@ -11,7 +11,7 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
       [ "union"; "sizeof";
-        "if"; "else"; "for"; "while";
+        "if"; "else"; "for"; "while"; "do";
         "return";
         "register"; "break"; "continue"; "goto";
         "static"; "const";
@@ -73,6 +73,8 @@
 }
 
 let space = [' ' '\t']
+let latex_symbol =
+  '\\' | '#' | '$' | ':' | '_' | '%' | '~' | ';' | '&' | '^'
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '_' '0'-'9']*
 
 rule pp fmt = parse
@@ -132,6 +134,9 @@ rule pp fmt = parse
 	fprintf fmt "}\\linebreak"; start_of_line fmt lexbuf;
 	pp fmt lexbuf
       }
+  (* strings *)
+  | '"'
+      { pp_print_string fmt "\\symbol{34}"; string fmt lexbuf; pp fmt lexbuf }
   | ident as s
       {
 	if is_keyword s then begin
@@ -158,6 +163,23 @@ rule pp fmt = parse
       { () }
   | _ as c
       { pp_print_char fmt c; pp fmt lexbuf }
+
+and string fmt = parse
+  | '"' { pp_print_string fmt "\\symbol{34}" }
+  | latex_symbol as c
+         { fprintf fmt "\\symbol{%d}" (Char.code c); string fmt lexbuf }
+  | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; string fmt lexbuf }
+  | "\n"
+      { fprintf fmt "~\\linebreak"; string fmt lexbuf }
+  | '\\' '"'
+      { fprintf fmt "\\symbol{92}\""; string fmt lexbuf }
+  | "\\\\"
+      { fprintf fmt "\\symbol{92}\\symbol{92}"; string fmt lexbuf }
+  | '{'  { fprintf fmt "\\symbol{123}"; string fmt lexbuf }
+  | '}'  { fprintf fmt "\\symbol{125}"; string fmt lexbuf }
+  | "\n" space* eof { }
+  | eof  { }
+  | _ as c { pp_print_char fmt c; string fmt lexbuf }
 
 and comment fmt = parse
   | "\n" (space* as s)
