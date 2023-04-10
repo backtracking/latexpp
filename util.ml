@@ -16,7 +16,7 @@ let count_spaces s =
   !c
 
 let indentation fmt n =
-  let space = 0.5 *. (float n) in
+  let space = 0.525 *. (float n) in
   fprintf fmt "\n\\noindent\\hspace*{%2.2fem}" space
 
 let print_ident ?(tt=false) fmt =
