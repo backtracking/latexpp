@@ -40,7 +40,7 @@ let newline fmt =
     let s = string_of_int !line in
     let n = String.length s in
     fprintf fmt "{\\rmfamily\\tiny";
-    for i = 1 to 3 - n do fprintf fmt "\\hspace*{1ex}" done;
+    for _ = 1 to 3 - n do fprintf fmt "\\hspace*{1ex}" done;
     fprintf fmt "{%s}}" s
   end
 
@@ -76,8 +76,7 @@ let set_output_file f = match !output_file with
   | Some _ -> raise (Bad "option -o cannot be used more than once")
 
 let print_version () =
-  printf "This is latexpp version %s, compiled on %s@."
-    Version.version Version.date;
+  printf "This is latexpp version %s@." Version.version ;
   printf "Copyright (c) 2008 Jean-Christophe Filliatre@.";
   exit 0
 

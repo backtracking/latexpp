@@ -1,0 +1,17 @@
+opam-version: "2.0"
+maintainer: "Jean-Christophe.Filliatre@cnrs.fr"
+authors: "Jean-Christophe Filliâtre"
+synopsis: "A quick LaTeX preprocessor"
+description: ""
+license: "GPL-2.1"
+homepage: "https://github.com/backtracking/latexpp"
+bug-reports: "https://github.com/backtracking/latexpp/issues"
+depends: [
+  "ocaml"
+  "dune" {>= "2.0.0"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+dev-repo: "git+https://github.com/backtracking/latexpp.git"

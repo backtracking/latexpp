@@ -1,0 +1,10 @@
+(env
+ (dev
+  (flags (:standard -w -27-26-32))))
+
+(ocamllex
+ (modules asm cplusplus math pascal python why c java ocaml pp tt))
+
+(executable
+ (public_name latexpp)
+ (promote (until-clean)))

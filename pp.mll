@@ -58,7 +58,7 @@
 
   let list_all () =
     let listof h =
-      List.sort Pervasives.compare (Hashtbl.fold (fun s _ l -> s :: l) h []) in
+      List.sort Stdlib.compare (Hashtbl.fold (fun s _ l -> s :: l) h []) in
     printf "@[<hov 2>environments:";
     List.iter (fun s -> printf "@\n%s" s) (listof ppenvs);
     printf "@]@\n@[<hov 2>macros:";
