@@ -4,8 +4,6 @@
 {
   open Lexing 
   open Format
-  open Options
-  open Util
 
   type t = 
     | Empty 

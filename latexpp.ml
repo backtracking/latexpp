@@ -2,6 +2,19 @@
 open Format
 open Options
 
+module EnforceLinking = struct (* a pity we have to do that... *)
+  module Tt = Tt
+  module Asm = Asm
+  module Cplusplus = Cplusplus
+  module Math = Math
+  module Pascal = Pascal
+  module Python = Python
+  module Why = Why
+  module C = C
+  module Java = Java
+  module Ocaml = Ocaml
+end
+
 let () =
   List.iter (function
 	       | Add (s1,s2) -> Pp.map_environment s1 s2
