@@ -25,7 +25,7 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
       [
-	"int"; "char"; "void"; "struct"; "enum";
+	"int"; "long"; "char"; "void"; "struct"; "enum";
       ];
     h
 

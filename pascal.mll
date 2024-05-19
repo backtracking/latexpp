@@ -9,7 +9,8 @@
 
   let is_keyword = make_table
     [
-      "if"; "then"; "else"; "while"; "do"; "program"; "procedure";
+      "if"; "then"; "else"; "while"; "do"; "program";
+      "function"; "procedure";
       "begin"; "end"; "record"; "forward";
     ]
 
@@ -31,7 +32,7 @@ let latex_symbol =
 rule pp fmt = parse
   | latex_symbol as c
          { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
-  | ' '  { pp_print_string fmt "\\hspace*{1ex}"; pp fmt lexbuf }
+  | ' '  { pp_print_string fmt "\\hspace*{1.2ex}"; pp fmt lexbuf }
 (*
   | ">" { if !tt then fprintf fmt ">" else fprintf fmt "\\ensuremath{>}";
 	  pp fmt lexbuf }

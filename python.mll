@@ -10,7 +10,7 @@
   let python_keywords =
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
-      ["def"; "if"; "else"; "elif";
+      ["as"; "def"; "if"; "else"; "elif";
        "return";
        "for"; "in";
        "and"; "or"; "not"; "while";
