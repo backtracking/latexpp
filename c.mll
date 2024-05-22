@@ -16,6 +16,7 @@
         "register"; "break"; "continue"; "goto";
         "static"; "const";
         "typedef";
+        "switch"; "case"; "default";
       ];
     h
 
@@ -89,8 +90,9 @@ rule pp fmt = parse
   | '$'  { fprintf fmt "\\${}"; pp fmt lexbuf }
   | '~'  { fprintf fmt "\\symbol{126}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\symbol{92}"; pp fmt lexbuf }
-  | "--" { if !tt then fprintf fmt "--" else fprintf fmt "\\ensuremath{-{}-}";
-	   pp fmt lexbuf }
+  | "--" { fprintf fmt "{-{}-}"; pp fmt lexbuf }
+  (* | "--" { if !tt then fprintf fmt "{-{}-}" else fprintf fmt "\\ensuremath{-{}-}"; *)
+  (*          pp fmt lexbuf } *)
   | '<'  { fprintf fmt "\\symbol{60}"; pp fmt lexbuf }
   | '>'  { fprintf fmt "\\symbol{62}"; pp fmt lexbuf }
 (*
