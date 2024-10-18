@@ -51,6 +51,7 @@
       "cmove"; "cmovz"; "cmovne"; "cmovnz";
       "cmovs"; "cmovns"; "cmovg"; "cmovge";
       "cmovl"; "cmovle"; "cmova"; "cmovae"; "cmovb"; "cmovbe";
+      "cvttss2sil";
     ]
 
   let llvm_keyword = make_table

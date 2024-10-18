@@ -24,7 +24,7 @@
         "for"; "to"; "downto"; "model"; "private";
 
 	"if"; "then"; "else"; "while"; "do"; "done"; "let"; "in"; "rec";
-	"assert"; "begin"; "end"; "try"; "with"; "raise"; "and";
+	"assume"; "assert"; "begin"; "end"; "try"; "with"; "raise"; "and";
 	"invariant"; "variant"; "match"; "any"; "ghost";
         "requires"; "ensures"; "returns";
         "break"; "continue"; "return";

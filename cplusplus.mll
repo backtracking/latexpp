@@ -88,7 +88,7 @@ rule pp fmt = parse
   | '}'  { fprintf fmt "\\symbol{125}"; pp fmt lexbuf }
   | latex_symbol as c
          { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
-  | ' '  { pp_print_string fmt "\\hspace*{1.20ex}"; pp fmt lexbuf }
+  | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; pp fmt lexbuf }
   (* | ':'  { fprintf fmt "\\ensuremath{\\colon}"; pp fmt lexbuf } *)
   | "--" { if !tt then fprintf fmt "--" else fprintf fmt "\\ensuremath{-{}-}";
 	   pp fmt lexbuf }

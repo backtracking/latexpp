@@ -39,7 +39,7 @@ rule pp fmt = parse
            else fprintf fmt "\\ensuremath{|}"; pp fmt lexbuf }
   | latex_symbol as c
          { fprintf fmt "\\symbol{%d}" (Char.code c); pp fmt lexbuf }
-  | ' '  { pp_print_string fmt "\\hspace*{1.20ex}"; pp fmt lexbuf }
+  | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; pp fmt lexbuf }
   | '{'  { if !is_tt then fprintf fmt "\\symbol{123}" else fprintf fmt "\\{";
 	   pp fmt lexbuf }
   | '}'  { if !is_tt then fprintf fmt "\\symbol{125}" else fprintf fmt "\\}";
@@ -92,7 +92,7 @@ and comment fmt = parse
   | latex_symbol as c
       { fprintf fmt "\\symbol{%d}" (Char.code c); comment fmt lexbuf }
   | ' '
-      { pp_print_string fmt "\\hspace*{1.20ex}"; comment fmt lexbuf }
+      { pp_print_string fmt "\\hspace*{1.22ex}"; comment fmt lexbuf }
   | '{'  { if !is_tt then fprintf fmt "\\symbol{123}" else fprintf fmt "\\{";
 	   comment fmt lexbuf }
   | '}'  { if !is_tt then fprintf fmt "\\symbol{125}" else fprintf fmt "\\}";
@@ -110,7 +110,7 @@ and string fmt = parse
   | '"' as c { pp_print_char fmt c }
   | latex_symbol as c
          { fprintf fmt "\\symbol{%d}" (Char.code c); string fmt lexbuf }
-  | ' '  { pp_print_string fmt "\\hspace*{1.20ex}"; string fmt lexbuf }
+  | ' '  { pp_print_string fmt "\\hspace*{1.22ex}"; string fmt lexbuf }
   | "\n"
       { fprintf fmt "~\\linebreak"; string fmt lexbuf }
   | '\\' '"'
