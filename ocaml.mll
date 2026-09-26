@@ -97,10 +97,14 @@ and comment fmt = parse
 	   comment fmt lexbuf }
   | '}'  { if !is_tt then fprintf fmt "\\symbol{125}" else fprintf fmt "\\}";
 	   comment fmt lexbuf }
+  | ">" { fprintf fmt ">"; comment fmt lexbuf }
+  | "<" { fprintf fmt "<"; comment fmt lexbuf }
+(*
   | ">"
       { fprintf fmt "\\ensuremath{>}"; comment fmt lexbuf }
   | "<"
       { fprintf fmt "\\ensuremath{<}"; comment fmt lexbuf }
+*)
   | eof
       { () }
   | _ as c

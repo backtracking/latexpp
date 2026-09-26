@@ -19,6 +19,7 @@
        "None";
        "from"; "import";
        "assert";
+       "class";
       ];
     h
 
@@ -74,6 +75,15 @@ rule pp fmt = parse
 	start_of_line fmt lexbuf;
 	pp fmt lexbuf
       }
+  | "\"\"\""
+      {
+	fprintf fmt "{";
+	if color () then fprintf fmt "\\color{pythoncomment}";
+	pp_print_string fmt "\"\"\"";
+	doc_string fmt lexbuf;
+	start_of_line fmt lexbuf;
+	pp fmt lexbuf
+      }
   | ident as s
       { ident fmt s; pp fmt lexbuf }
 (*
@@ -115,6 +125,22 @@ and one_line_comment fmt = parse
   | "\n" space* eof { fprintf fmt "}" }
   | eof  { fprintf fmt "}" }
   | _ as c { pp_print_char fmt c; one_line_comment fmt lexbuf }
+
+and doc_string fmt = parse
+  | "\"\"\"" { fprintf fmt "\"\"\"}" }
+  | '\\' { fprintf fmt "\\symbol{92}"; doc_string fmt lexbuf }
+  | '{'  { fprintf fmt "\\symbol{123}"; doc_string fmt lexbuf }
+  | '}'  { fprintf fmt "\\symbol{125}"; doc_string fmt lexbuf }
+  | '$' { fprintf fmt "\\${}"; doc_string fmt lexbuf }
+  | '#' { fprintf fmt "\\#{}"; doc_string fmt lexbuf }
+  | '^' { fprintf fmt "\\^{}"; doc_string fmt lexbuf }
+  | '_'  { fprintf fmt "\\_{}"; doc_string fmt lexbuf }
+  | '%'  { fprintf fmt "\\%%{}"; doc_string fmt lexbuf }
+  | '~'  { fprintf fmt "\\~{}"; doc_string fmt lexbuf }
+  | "&" { fprintf fmt "\\&{}"; doc_string fmt lexbuf }
+  | " " { fprintf fmt "~"; doc_string fmt lexbuf }
+  | eof  { fprintf fmt "}" }
+  | _ as c { pp_print_char fmt c; doc_string fmt lexbuf }
 
 and string fmt = parse
   | '"' as c { pp_print_char fmt c }

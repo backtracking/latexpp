@@ -26,7 +26,8 @@
     let h = Hashtbl.create 97 in
     List.iter (fun s -> Hashtbl.add h s ())
       [
-	"int"; "long"; "char"; "void"; "struct"; "enum";
+	"bool"; "int"; "long"; "char"; "void"; "struct"; "enum";
+        "float"; "double";
       ];
     h
 
@@ -87,6 +88,7 @@ rule pp fmt = parse
   | '%'  { fprintf fmt "\\%%{}"; pp fmt lexbuf }
   (* | ':'  { fprintf fmt "\\ensuremath{\\colon}"; pp fmt lexbuf } *)
   | '&'  { fprintf fmt "\\&{}"; pp fmt lexbuf }
+  | '^'  { fprintf fmt "\\^{}"; pp fmt lexbuf }
   | '$'  { fprintf fmt "\\${}"; pp fmt lexbuf }
   | '~'  { fprintf fmt "\\symbol{126}"; pp fmt lexbuf }
   | '\\'  { fprintf fmt "\\symbol{92}"; pp fmt lexbuf }
@@ -196,6 +198,7 @@ and comment fmt = parse
   | '_'  { fprintf fmt "\\_{}"; comment fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; comment fmt lexbuf }
   | "&" { fprintf fmt "\\&{}"; comment fmt lexbuf }
+  | '^'  { fprintf fmt "\\^{}"; comment fmt lexbuf }
   | '~'  { fprintf fmt "\\~{}"; comment fmt lexbuf }
   | ">" { fprintf fmt ">"; comment fmt lexbuf }
   | "<" { fprintf fmt "<"; comment fmt lexbuf }
@@ -225,6 +228,7 @@ and framac fmt = parse
   | '%'  { fprintf fmt "\\%%{}"; framac fmt lexbuf }
   | ':'  { fprintf fmt "\\ensuremath{\\colon}"; framac fmt lexbuf }
   | '&'  { fprintf fmt "\\&{}"; framac fmt lexbuf }
+  | '^'  { fprintf fmt "\\^{}"; framac fmt lexbuf }
   | '~'  { fprintf fmt "\\symbol{126}"; framac fmt lexbuf }
   | '\\'  { fprintf fmt "\\symbol{92}"; framac fmt lexbuf }
   | "--" { if !tt then fprintf fmt "--" else fprintf fmt "\\ensuremath{-{}-}";
@@ -299,6 +303,7 @@ and one_line_comment fmt = parse
   | '_'  { fprintf fmt "\\_{}"; one_line_comment fmt lexbuf }
   | '%'  { fprintf fmt "\\%%{}"; one_line_comment fmt lexbuf }
   | "&" { fprintf fmt "\\&{}"; one_line_comment fmt lexbuf }
+  | '^'  { fprintf fmt "\\^{}"; one_line_comment fmt lexbuf }
   | " " { fprintf fmt "~"; one_line_comment fmt lexbuf }
   | eof  { () }
   | _ as c { pp_print_char fmt c; one_line_comment fmt lexbuf }
